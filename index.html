@@ -1,107 +1,389 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <title>تحويل الفيديو</title>
-  <style>
-    body {
-      background: linear-gradient(135deg, #0d0d0d, #1a75ff);
-      color: #fff;
-      font-family: Arial, sans-serif;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      margin: 0;
-    }
-    .container {
-      text-align: center;
-      background: rgba(0, 0, 0, 0.6);
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.5);
-      max-width: 500px;
-      width: 90%;
-    }
-    input[type="text"], select {
-      width: 80%;
-      padding: 10px;
-      font-size: 16px;
-      border: none;
-      border-radius: 5px;
-      margin-bottom: 15px;
-    }
-    button {
-      padding: 10px 20px;
-      font-size: 16px;
-      border: none;
-      border-radius: 5px;
-      background-color: #007BFF;
-      color: #fff;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #0056b3;
-    }
-    pre {
-      background: #333;
-      padding: 10px;
-      border-radius: 5px;
-      text-align: left;
-      overflow-x: auto;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ThoughtFlow - منصة التفكير المرئي والتعلم العميق</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;600;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/fabric@5.3.0/dist/fabric.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 </head>
 <body>
-  <div class="container">
-    <h1>تحويل الفيديو</h1>
-    <form id="videoForm">
-      <input type="text" id="videoUrl" placeholder="أدخل رابط الفيديو هنا" required>
-      <br>
-      <select id="videoQuality">
-        <option value="240p">240p</option>
-        <option value="360p">360p</option>
-        <option value="480p">480p</option>
-        <option value="720p" selected>720p</option>
-        <option value="1080p">1080p</option>
-      </select>
-      <br>
-      <button type="submit">تحويل</button>
-    </form>
-    <div id="result"></div>
-  </div>
-  <script>
-    document.getElementById('videoForm').addEventListener('submit', function(event) {
-      event.preventDefault();
-      
-      var url = document.getElementById('videoUrl').value.trim();
-      var quality = document.getElementById('videoQuality').value;
-      
-      if (!url.startsWith("http://") && !url.startsWith("https://")) {
-        alert("يرجى إدخال رابط صحيح يبدأ بـ http:// أو https://");
-        return;
-      }
-      
-      // إضافة معاملة الجودة إلى رابط API
-      var apiUrl = "https://onlinevideoconverter.pro/api/json?url=" + encodeURIComponent(url) + "&quality=" + encodeURIComponent(quality);
-      
-      document.getElementById('result').innerHTML = "<p>جاري معالجة الرابط...</p>";
-      
-      fetch(apiUrl)
-        .then(response => {
-          if (!response.ok) {
-            throw new Error("Network response was not ok");
-          }
-          return response.json();
-        })
-        .then(data => {
-          document.getElementById('result').innerHTML = "<pre>" + JSON.stringify(data, null, 2) + "</pre>";
-        })
-        .catch(error => {
-          console.error("حدث خطأ:", error);
-          document.getElementById('result').innerHTML = "<p>حدث خطأ أثناء الاتصال أو معالجة البيانات.</p>";
-        });
-    });
-  </script>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav">
+            <div class="nav-brand">
+                <h2>ThoughtFlow</h2>
+                <span class="beta-badge">مجاني</span>
+            </div>
+            <div class="nav-links">
+                <a href="#features">المميزات</a>
+                <a href="#templates">القوالب</a>
+                <a href="#pricing">التسعير</a>
+                <a href="#about">عن المنصة</a>
+            </div>
+            <div class="nav-buttons">
+                <button class="btn-secondary" id="loginBtn">تسجيل الدخول</button>
+                <button class="btn-primary" id="signupBtn">ابدأ مجاناً</button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1>فكر بصرياً، <br><span class="gradient-text">تعلم بعمق</span></h1>
+                <p class="hero-subtitle">
+                    منصة مجانية للتفكير المرئي والتعلم التفاعلي. اجمع أفكارك، اربط المعلومات، وانشئ شبكة معرفية لا نهائية.
+                </p>
+                <div class="hero-buttons">
+                    <button class="btn-primary btn-large" id="startFreeBtn">
+                        <i data-lucide="play-circle"></i>
+                        ابدأ مجاناً الآن
+                    </button>
+                    <button class="btn-secondary btn-large" id="watchDemoBtn">
+                        <i data-lucide="play"></i>
+                        شاهد العرض التوضيحي
+                    </button>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <strong>100% مجاني</strong>
+                        <span>بلا حدود</span>
+                    </div>
+                    <div class="stat">
+                        <strong>مساعد AI</strong>
+                        <span>ذكي ومجاني</span>
+                    </div>
+                    <div class="stat">
+                        <strong>تعاون فوري</strong>
+                        <span>في الوقت الفعلي</span>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="canvas-preview">
+                    <div class="floating-card card-1">
+                        <h4>البحث الأكاديمي</h4>
+                        <p>اجمع مصادرك وأفكارك</p>
+                    </div>
+                    <div class="floating-card card-2">
+                        <h4>العصف الذهني</h4>
+                        <p>فكر بحرية واربط الأفكار</p>
+                    </div>
+                    <div class="floating-card card-3">
+                        <h4>التعلم التفاعلي</h4>
+                        <p>تعلم بطريقة بصرية ممتعة</p>
+                    </div>
+                    <svg class="connection-lines" viewBox="0 0 400 300">
+                        <path d="M100 100 Q200 50 300 100" stroke="#6366f1" stroke-width="2" fill="none"/>
+                        <path d="M150 200 Q200 150 250 200" stroke="#8b5cf6" stroke-width="2" fill="none"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="container">
+            <div class="section-header">
+                <h2>كل ما تحتاجه لجعل التعلم <span class="gradient-text">ممتعاً</span></h2>
+                <p>اكتشف مميزات ThoughtFlow التي تجعل التعلم والبحث تجربة ممتعة وفعالة</p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i data-lucide="infinity"></i>
+                    </div>
+                    <h3>لوحة لا نهائية</h3>
+                    <p>فضاء غير محدود لترتيب أفكارك ومعلوماتك بحرية كاملة</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i data-lucide="blocks"></i>
+                    </div>
+                    <h3>كتل متنوعة</h3>
+                    <p>نصوص، صور، ملفات PDF، فيديوهات - كل ما تحتاجه في مكان واحد</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i data-lucide="git-branch"></i>
+                    </div>
+                    <h3>روابط ذكية</h3>
+                    <p>اربط الأفكار بأسهم وروابط ثنائية الاتجاه لإنشاء شبكة معرفية</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i data-lucide="bot"></i>
+                    </div>
+                    <h3>مساعد AI مجاني</h3>
+                    <p>ذكاء اصطناعي متقدم لمساعدتك في التلخيص والتحليل مجاناً بالكامل</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i data-lucide="users"></i>
+                    </div>
+                    <h3>تعاون فوري</h3>
+                    <p>اعمل مع فريقك في الوقت الفعلي على نفس اللوحة</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i data-lucide="layout-template"></i>
+                    </div>
+                    <h3>قوالب احترافية</h3>
+                    <p>قوالب جاهزة للبحث الأكاديمي والعصف الذهني والتخطيط</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Canvas Demo Section -->
+    <section class="canvas-demo">
+        <div class="container">
+            <div class="section-header">
+                <h2>جرب القوة الكاملة للتفكير المرئي</h2>
+                <p>اسحب، أضف، اربط - كل شيء بسهولة ويسر</p>
+            </div>
+            
+            <div class="demo-canvas-container">
+                <canvas id="demoCanvas" width="800" height="600"></canvas>
+                <div class="canvas-toolbar">
+                    <button class="tool-btn active" data-tool="select">
+                        <i data-lucide="mouse-pointer"></i>
+                    </button>
+                    <button class="tool-btn" data-tool="text">
+                        <i data-lucide="type"></i>
+                    </button>
+                    <button class="tool-btn" data-tool="note">
+                        <i data-lucide="sticky-note"></i>
+                    </button>
+                    <button class="tool-btn" data-tool="image">
+                        <i data-lucide="image"></i>
+                    </button>
+                    <button class="tool-btn" data-tool="link">
+                        <i data-lucide="link"></i>
+                    </button>
+                    <div class="toolbar-separator"></div>
+                    <button class="tool-btn" id="aiAssistBtn">
+                        <i data-lucide="bot"></i>
+                        مساعد AI
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Templates Section -->
+    <section id="templates" class="templates">
+        <div class="container">
+            <div class="section-header">
+                <h2>قوالب احترافية للتعلم والبحث</h2>
+                <p>ابدأ بسرعة مع قوالبنا المصممة خصيصاً للطلاب والباحثين</p>
+            </div>
+            
+            <div class="templates-grid">
+                <div class="template-card">
+                    <div class="template-preview">
+                        <div class="mini-blocks">
+                            <div class="mini-block"></div>
+                            <div class="mini-block"></div>
+                            <div class="mini-block"></div>
+                        </div>
+                    </div>
+                    <h3>البحث الأكاديمي</h3>
+                    <p>نظم مراجعك الأدبية واربط النتائج</p>
+                    <button class="btn-secondary">استخدم هذا القالب</button>
+                </div>
+                
+                <div class="template-card">
+                    <div class="template-preview">
+                        <div class="mini-blocks scattered">
+                            <div class="mini-block"></div>
+                            <div class="mini-block"></div>
+                            <div class="mini-block"></div>
+                            <div class="mini-block"></div>
+                        </div>
+                    </div>
+                    <h3>العصف الذهني</h3>
+                    <p>اجمع أفكارك ونظمها بطريقة إبداعية</p>
+                    <button class="btn-secondary">استخدم هذا القالب</button>
+                </div>
+                
+                <div class="template-card">
+                    <div class="template-preview">
+                        <div class="mini-blocks timeline">
+                            <div class="mini-block"></div>
+                            <div class="mini-block"></div>
+                            <div class="mini-block"></div>
+                        </div>
+                    </div>
+                    <h3>خريطة المفاهيم</h3>
+                    <p>تعلم المواضيع المعقدة بصرياً</p>
+                    <button class="btn-secondary">استخدم هذا القالب</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials">
+        <div class="container">
+            <div class="section-header">
+                <h2>ماذا يقول المستخدمون؟</h2>
+                <p>انضم إلى آلاف الطلاب والباحثين الذين يكتشفون أفكارهم الأفضل</p>
+            </div>
+            
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <p>"ThoughtFlow غيّر طريقة دراستي تماماً. أصبحت أتذكر المعلومات بسهولة أكبر عندما أربطها بصرياً."</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">أ</div>
+                        <div class="author-info">
+                            <h4>أحمد محمد</h4>
+                            <span>طالب طب</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <p>"مساعد AI المجاني يوفر علي ساعات من العمل. يلخص لي المقالات الطويلة ويساعدني في تحليل البيانات."</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">ف</div>
+                        <div class="author-info">
+                            <h4>فاطمة العلي</h4>
+                            <span>باحثة دكتوراه</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <p>"التعاون مع فريق البحث أصبح سلساً جداً. نعمل جميعاً على نفس اللوحة ونرى التحديثات فورياً."</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">س</div>
+                        <div class="author-info">
+                            <h4>سارة حسن</h4>
+                            <span>أستاذة جامعية</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="pricing">
+        <div class="container">
+            <div class="section-header">
+                <h2>مجاني 100% - بلا حدود</h2>
+                <p>نؤمن أن التعليم حق للجميع. لهذا ThoughtFlow مجاني بالكامل مع جميع المميزات</p>
+            </div>
+            
+            <div class="pricing-card">
+                <div class="price-header">
+                    <h3>خطة مجانية - إلى الأبد</h3>
+                    <div class="price">
+                        <span class="currency">مجاني</span>
+                        <span class="period">للأبد</span>
+                    </div>
+                </div>
+                <div class="features-list">
+                    <div class="feature-item">
+                        <i data-lucide="check"></i>
+                        لوحات لا نهائية
+                    </div>
+                    <div class="feature-item">
+                        <i data-lucide="check"></i>
+                        مساعد AI ذكي ومجاني
+                    </div>
+                    <div class="feature-item">
+                        <i data-lucide="check"></i>
+                        تعاون في الوقت الفعلي
+                    </div>
+                    <div class="feature-item">
+                        <i data-lucide="check"></i>
+                        جميع أنواع الكتل
+                    </div>
+                    <div class="feature-item">
+                        <i data-lucide="check"></i>
+                        قوالب احترافية
+                    </div>
+                    <div class="feature-item">
+                        <i data-lucide="check"></i>
+                        تخزين آمن في السحابة
+                    </div>
+                </div>
+                <button class="btn-primary btn-large">ابدأ الآن - مجاناً</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <h3>ThoughtFlow</h3>
+                    <p>منصة التفكير المرئي والتعلم العميق - مجانية إلى الأبد</p>
+                </div>
+                <div class="footer-links">
+                    <div class="link-group">
+                        <h4>المنتج</h4>
+                        <a href="#features">المميزات</a>
+                        <a href="#templates">القوالب</a>
+                        <a href="#pricing">التسعير</a>
+                    </div>
+                    <div class="link-group">
+                        <h4>الدعم</h4>
+                        <a href="#help">مركز المساعدة</a>
+                        <a href="#docs">الوثائق</a>
+                        <a href="#contact">اتصل بنا</a>
+                    </div>
+                    <div class="link-group">
+                        <h4>الشركة</h4>
+                        <a href="#about">عن المنصة</a>
+                        <a href="#blog">المدونة</a>
+                        <a href="#careers">الوظائف</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 ThoughtFlow. جميع الحقوق محفوظة.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modals -->
+    <div id="appModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>مرحباً بك في ThoughtFlow</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="appContainer">
+                    <!-- Canvas App will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
