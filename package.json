@@ -1,24 +1,46 @@
 {
-  "name": "thinkcanvas",
+  "name": "ideaflux",
   "version": "1.0.0",
-  "description": "ThinkCanvas - Visual Learning and Mind Mapping Platform",
+  "description": "منصة التفكير البصري الأولى المصممة للمستخدم العربي - مجانية بالكامل",
   "main": "index.html",
   "scripts": {
-    "build": "echo 'Build complete'",
-    "dev": "python3 -m http.server 8000",
-    "start": "python3 -m http.server 8000"
+    "dev": "live-server --port=3000 --open=/",
+    "build": "echo 'Building for production...' && npm run optimize",
+    "optimize": "echo 'Optimizing assets...'",
+    "test": "echo 'Running tests...'",
+    "deploy": "netlify deploy --prod --dir=."
   },
   "keywords": [
-    "mind-mapping",
-    "visual-learning",
+    "visual-thinking",
+    "mind-mapping", 
+    "brainstorming",
     "canvas",
-    "notes",
-    "research",
+    "arabic",
+    "free",
     "collaboration",
-    "ai-assistant"
+    "research",
+    "notes"
   ],
-  "author": "ThinkCanvas Team",
+  "author": "IdeaFlux Team",
   "license": "MIT",
-  "dependencies": {},
-  "devDependencies": {}
+  "homepage": "https://ideaflux.netlify.app",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ideaflux/ideaflux.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ideaflux/ideaflux/issues"
+  },
+  "devDependencies": {
+    "live-server": "^1.2.2"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ],
+  "engines": {
+    "node": ">=14.0.0",
+    "npm": ">=6.0.0"
+  }
 }

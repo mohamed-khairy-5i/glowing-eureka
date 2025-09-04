@@ -1,56 +1,97 @@
+# Netlify Configuration for IdeaFlux
+
 [build]
+  # Build settings
   publish = "."
-  command = "echo 'Building ThinkCanvas...'"
+  command = "echo 'Static site - no build required'"
 
-[build.environment]
-  NODE_VERSION = "18"
+# Redirect rules
+[[redirects]]
+  # SPA fallback for client-side routing
+  from = "/*"
+  to = "/index.html"
+  status = 200
+  conditions = {Role = ["admin"], Country = ["US"]}
 
+# Headers for security and performance
 [[headers]]
   for = "/*"
   [headers.values]
+    # Security headers
     X-Frame-Options = "DENY"
     X-XSS-Protection = "1; mode=block"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
-    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: blob:; connect-src 'self' https:;"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+    
+    # Performance headers
+    Cache-Control = "public, max-age=31536000, immutable"
 
 [[headers]]
-  for = "/assets/*"
+  for = "*.html"
   [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
+    Cache-Control = "public, max-age=0, must-revalidate"
 
 [[headers]]
   for = "*.css"
   [headers.values]
-    Cache-Control = "public, max-age=31536000"
+    Cache-Control = "public, max-age=31536000, immutable"
+    Content-Type = "text/css; charset=utf-8"
 
 [[headers]]
   for = "*.js"
   [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+    Content-Type = "application/javascript; charset=utf-8"
+
+[[headers]]
+  for = "*.woff2"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+    Content-Type = "font/woff2"
+
+# Environment variables
+[context.production.environment]
+  NODE_ENV = "production"
+
+# Form handling
+[forms]
+  [forms.contact]
+    name = "contact-form"
+    
+# Functions (for future API endpoints)
+[functions]
+  directory = "netlify/functions"
+
+# Edge functions
+[[edge_functions]]
+  function = "geolocation"
+  path = "/*"
+
+# Branch deploys
+[context.branch-deploy]
+  command = "echo 'Branch deploy'"
+
+[context.deploy-preview]
+  command = "echo 'Deploy preview'"
+
+# Plugin configuration
+[[plugins]]
+  package = "@netlify/plugin-sitemap"
+
+[[plugins]]
+  package = "netlify-plugin-minify-html"
+  [plugins.inputs]
+    contexts = ["production"]
+
+# PWA settings
+[[headers]]
+  for = "/manifest.json"
+  [headers.values]
+    Content-Type = "application/manifest+json"
     Cache-Control = "public, max-age=31536000"
 
-[[redirects]]
-  from = "/canvas"
-  to = "/index.html#canvas"
-  status = 200
-
-[[redirects]]
-  from = "/demo"
-  to = "/index.html#interactive-demo"
-  status = 200
-
-[[redirects]]
-  from = "/features"
-  to = "/index.html#features"
-  status = 200
-
-[[redirects]]
-  from = "/pricing"
-  to = "/index.html#pricing"
-  status = 200
-
-# Handle SPA routing
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
+# API rate limiting
+[[edge_functions]]
+  function = "rate-limit"
+  path = "/api/*"

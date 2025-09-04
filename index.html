@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ThinkCanvas - فكر بصرياً، تعلم بعمق</title>
-    <meta name="description" content="ThinkCanvas - منصة التعلم المرئي وخرائط الذهن المتقدمة مع ذكاء اصطناعي مساعد">
-    <meta name="keywords" content="خريطة ذهنية, تعلم مرئي, لوحة لا نهائية, ملاحظات, بحث, تعاون, ذكاء اصطناعي">
+    <title>IdeaFlux - منصة التفكير البصري والبحث المبتكر</title>
+    <meta name="description" content="منصة مجانية للتفكير البصري وتنظيم الأفكار بطريقة تفاعلية مع قماش لانهائي وأدوات متقدمة">
+    <meta name="keywords" content="تفكير بصري, خرائط ذهنية, تنظيم أفكار, بحث تفاعلي, مجاني">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -17,97 +17,86 @@
     <nav class="navbar">
         <div class="nav-container">
             <div class="nav-logo">
-                <i class="fas fa-palette"></i>
-                <span>ThinkCanvas</span>
+                <i class="fas fa-brain"></i>
+                <span>IdeaFlux</span>
             </div>
-            <div class="nav-menu">
+            <div class="nav-menu" id="nav-menu">
                 <a href="#home" class="nav-link">الرئيسية</a>
                 <a href="#features" class="nav-link">الميزات</a>
                 <a href="#templates" class="nav-link">القوالب</a>
                 <a href="#pricing" class="nav-link">الأسعار</a>
-                <a href="#contact" class="nav-link">التواصل</a>
+                <a href="#contact" class="nav-link">اتصل بنا</a>
             </div>
-            <div class="nav-actions">
-                <button class="btn-secondary">تسجيل الدخول</button>
-                <button class="btn-primary">ابدأ مجاناً</button>
+            <div class="nav-buttons">
+                <button class="btn btn-outline" onclick="openModal('login')">تسجيل دخول</button>
+                <button class="btn btn-primary" onclick="openModal('signup')">ابدأ مجاناً</button>
             </div>
-            <div class="hamburger">
-                <span></span>
-                <span></span>
-                <span></span>
+            <div class="hamburger" id="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
             </div>
         </div>
     </nav>
 
     <!-- Hero Section -->
     <section id="home" class="hero">
-        <div class="hero-content">
-            <div class="hero-text">
-                <h1>فكر <span class="highlight">بصرياً</span>، تعلم <span class="highlight">بعمق</span></h1>
+        <div class="hero-background"></div>
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">
+                    فكّر بصرياً، تعلّم بعمق
+                    <span class="gradient-text">مع IdeaFlux</span>
+                </h1>
                 <p class="hero-subtitle">
-                    منصة ThinkCanvas تمنحك لوحة لا نهائية لتنظيم أفكارك وملاحظاتك وأبحاثك 
-                    مع ذكاء اصطناعي متقدم يساعدك على الإبداع والتعلم بطريقة مرئية تفاعلية
+                    منصة التفكير البصري الأولى من نوعها في المنطقة العربية. قماش لانهائي لتنظيم أفكارك، 
+                    وأدوات ذكية لتحويل أفكارك إلى مستندات احترافية - مجاناً بالكامل!
                 </p>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <div class="stat-number">15,000+</div>
+                        <div class="stat-label">مستخدم نشط</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number">100%</div>
+                        <div class="stat-label">مجاني</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number">24/7</div>
+                        <div class="stat-label">دعم فني</div>
+                    </div>
+                </div>
                 <div class="hero-buttons">
-                    <button class="btn-primary-large" onclick="startCanvas()">
-                        <i class="fas fa-rocket"></i>
-                        ابدأ الإبداع مجاناً
-                    </button>
-                    <button class="btn-secondary-large" onclick="showDemo()">
+                    <button class="btn btn-primary btn-large" onclick="startFreeCanvas()">
                         <i class="fas fa-play"></i>
+                        ابدأ التصميم الآن
+                    </button>
+                    <button class="btn btn-outline btn-large" onclick="showDemo()">
+                        <i class="fas fa-video"></i>
                         شاهد العرض التوضيحي
                     </button>
                 </div>
-                <div class="hero-stats">
-                    <div class="stat">
-                        <span class="stat-number">15,000+</span>
-                        <span class="stat-label">مستخدم نشط</span>
-                    </div>
-                    <div class="stat">
-                        <span class="stat-number">100%</span>
-                        <span class="stat-label">مجاني للأبد</span>
-                    </div>
-                    <div class="stat">
-                        <span class="stat-number">∞</span>
-                        <span class="stat-label">لوحة لا نهائية</span>
-                    </div>
-                </div>
             </div>
             <div class="hero-visual">
-                <div class="canvas-demo">
-                    <div class="demo-node note-node" style="top: 20%; left: 10%;">
+                <div class="canvas-preview" id="canvas-preview">
+                    <div class="floating-card idea-card">
+                        <i class="fas fa-lightbulb"></i>
+                        <span>فكرة رئيسية</span>
+                    </div>
+                    <div class="floating-card note-card">
                         <i class="fas fa-sticky-note"></i>
                         <span>ملاحظة</span>
                     </div>
-                    <div class="demo-node image-node" style="top: 40%; left: 60%;">
+                    <div class="floating-card pdf-card">
+                        <i class="fas fa-file-pdf"></i>
+                        <span>ملف PDF</span>
+                    </div>
+                    <div class="connection-line"></div>
+                    <div class="floating-card image-card">
                         <i class="fas fa-image"></i>
                         <span>صورة</span>
                     </div>
-                    <div class="demo-node pdf-node" style="top: 70%; left: 30%;">
-                        <i class="fas fa-file-pdf"></i>
-                        <span>PDF</span>
-                    </div>
-                    <div class="demo-node ai-node" style="top: 15%; left: 75%;">
-                        <i class="fas fa-robot"></i>
-                        <span>مساعد ذكي</span>
-                    </div>
-                    <svg class="demo-connections">
-                        <path d="M 100 80 Q 200 50 350 120" stroke="#4f46e5" stroke-width="2" fill="none" stroke-dasharray="5,5">
-                            <animate attributeName="stroke-dashoffset" values="0;10" dur="1s" repeatCount="indefinite"/>
-                        </path>
-                        <path d="M 350 200 Q 250 250 150 280" stroke="#10b981" stroke-width="2" fill="none" stroke-dasharray="5,5">
-                            <animate attributeName="stroke-dashoffset" values="0;10" dur="1.5s" repeatCount="indefinite"/>
-                        </path>
-                    </svg>
                 </div>
-            </div>
-        </div>
-        <div class="hero-background">
-            <div class="floating-shapes">
-                <div class="shape shape-1"></div>
-                <div class="shape shape-2"></div>
-                <div class="shape shape-3"></div>
-                <div class="shape shape-4"></div>
             </div>
         </div>
     </section>
@@ -116,146 +105,355 @@
     <section id="features" class="features">
         <div class="container">
             <div class="section-header">
-                <h2>كل ما تحتاجه <span class="highlight">لجعل البحث ممتعاً</span></h2>
-                <p>اكتشف ميزات ThinkCanvas المتقدمة التي تفوق منافسينا</p>
+                <h2>ميزات لا تجدها في أي مكان آخر</h2>
+                <p>IdeaFlux يتفوق على المنافسين بميزات حصرية ومجانية بالكامل</p>
             </div>
             
+            <!-- Feature Comparison -->
+            <div class="comparison-table">
+                <div class="comparison-header">
+                    <h3>مقارنة مع Scrintal والمنافسين</h3>
+                </div>
+                <table class="comparison">
+                    <thead>
+                        <tr>
+                            <th>الميزة</th>
+                            <th>IdeaFlux</th>
+                            <th>Scrintal</th>
+                            <th>Miro</th>
+                            <th>Notion</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>قماش لانهائي</td>
+                            <td><i class="fas fa-check text-green"></i></td>
+                            <td><i class="fas fa-check text-green"></i></td>
+                            <td><i class="fas fa-check text-green"></i></td>
+                            <td><i class="fas fa-times text-red"></i></td>
+                        </tr>
+                        <tr>
+                            <td>مجاني بالكامل</td>
+                            <td><i class="fas fa-check text-green"></i></td>
+                            <td><i class="fas fa-times text-red"></i></td>
+                            <td><i class="fas fa-times text-red"></i></td>
+                            <td><i class="fas fa-times text-red"></i></td>
+                        </tr>
+                        <tr>
+                            <td>دعم العربية الكامل</td>
+                            <td><i class="fas fa-check text-green"></i></td>
+                            <td><i class="fas fa-times text-red"></i></td>
+                            <td><i class="fas fa-minus text-orange"></i></td>
+                            <td><i class="fas fa-minus text-orange"></i></td>
+                        </tr>
+                        <tr>
+                            <td>ذكاء اصطناعي متقدم</td>
+                            <td><i class="fas fa-check text-green"></i></td>
+                            <td><i class="fas fa-minus text-orange"></i></td>
+                            <td><i class="fas fa-times text-red"></i></td>
+                            <td><i class="fas fa-minus text-orange"></i></td>
+                        </tr>
+                        <tr>
+                            <td>تعاون فوري</td>
+                            <td><i class="fas fa-check text-green"></i></td>
+                            <td><i class="fas fa-check text-green"></i></td>
+                            <td><i class="fas fa-check text-green"></i></td>
+                            <td><i class="fas fa-check text-green"></i></td>
+                        </tr>
+                        <tr>
+                            <td>قوالب احترافية</td>
+                            <td><i class="fas fa-check text-green"></i></td>
+                            <td><i class="fas fa-minus text-orange"></i></td>
+                            <td><i class="fas fa-check text-green"></i></td>
+                            <td><i class="fas fa-minus text-orange"></i></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
             <div class="features-grid">
-                <!-- Infinite Canvas -->
                 <div class="feature-card">
                     <div class="feature-icon">
-                        <i class="fas fa-expand-arrows-alt"></i>
+                        <i class="fas fa-infinity"></i>
                     </div>
-                    <h3>لوحة لا نهائية</h3>
-                    <p>فكر بحرية على مساحة لا محدودة! اجمع ملفات PDF والملاحظات والفيديو والصور كلها في مكان واحد</p>
-                    <div class="feature-enhancement">
-                        <i class="fas fa-star"></i>
-                        <span>تحسين: أداء أسرع 3x من المنافسين</span>
-                    </div>
+                    <h3>قماش لانهائي ذكي</h3>
+                    <p>مساحة عمل بلا حدود مع تنظيم تلقائي للمحتوى وذاكرة ذكية تتذكر تفضيلاتك</p>
+                    <ul>
+                        <li>تنظيم تلقائي للعناصر</li>
+                        <li>حفظ تلقائي كل ثانية</li>
+                        <li>استرجاع إصدارات سابقة</li>
+                    </ul>
                 </div>
 
-                <!-- AI Assistant -->
-                <div class="feature-card premium">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-language"></i>
+                    </div>
+                    <h3>دعم عربي كامل</h3>
+                    <p>أول منصة تفكير بصري مصممة خصيصاً للمستخدم العربي مع دعم الكتابة من اليمين لليسار</p>
+                    <ul>
+                        <li>واجهة عربية بالكامل</li>
+                        <li>خطوط عربية جميلة</li>
+                        <li>قوالب للثقافة العربية</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
                     <div class="feature-icon">
                         <i class="fas fa-robot"></i>
                     </div>
-                    <h3>مساعد ذكي متقدم</h3>
-                    <p>تعاون مع الذكاء الاصطناعي لتسريع المهام المتكررة والتركيز على ما تفعله بشكل فريد</p>
-                    <div class="feature-enhancement">
-                        <i class="fas fa-magic"></i>
-                        <span>جديد: GPT-4 مدمج مجاناً!</span>
-                    </div>
+                    <h3>مساعد ذكي متطور</h3>
+                    <p>ذكاء اصطناعي يفهم السياق العربي ويساعدك في تنظيم أفكارك وإنشاء المحتوى</p>
+                    <ul>
+                        <li>تلخيص ذكي للنصوص</li>
+                        <li>اقتراحات إبداعية</li>
+                        <li>ترجمة فورية</li>
+                    </ul>
                 </div>
 
-                <!-- Smart Connections -->
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-project-diagram"></i>
-                    </div>
-                    <h3>روابط ذكية متطورة</h3>
-                    <p>اصنع اتصالات وتصور كل شيء بالأسهم والروابط ثنائية الاتجاه مع اقتراحات ذكية</p>
-                    <div class="feature-enhancement">
-                        <i class="fas fa-lightbulb"></i>
-                        <span>ميزة: اقتراح الروابط تلقائياً</span>
-                    </div>
-                </div>
-
-                <!-- Advanced Blocks -->
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-cubes"></i>
-                    </div>
-                    <h3>بلوكات متقدمة</h3>
-                    <p>بلوكات أو مستندات أو أسهم أو روابط ثنائية... أنت من تختار من مجموعة واسعة من الخيارات</p>
-                    <div class="feature-enhancement">
-                        <i class="fas fa-plus"></i>
-                        <span>50+ نوع بلوك (أكثر من المنافسين)</span>
-                    </div>
-                </div>
-
-                <!-- Real-time Collaboration -->
                 <div class="feature-card">
                     <div class="feature-icon">
                         <i class="fas fa-users"></i>
                     </div>
-                    <h3>تعاون فوري</h3>
-                    <p>كلما زاد العدد كان أفضل. ادع أصدقائك وزملائك للعمل معاً في الوقت الفعلي</p>
-                    <div class="feature-enhancement">
-                        <i class="fas fa-clock"></i>
-                        <span>تحديثات فورية بدون تأخير</span>
+                    <h3>تعاون فوري محسن</h3>
+                    <p>اعمل مع فريقك في الوقت الفعلي مع ميزات تعاون متقدمة وإدارة أذونات ذكية</p>
+                    <ul>
+                        <li>مؤشرات الأعضاء المباشرة</li>
+                        <li>تعليقات صوتية</li>
+                        <li>إشعارات ذكية</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-file-export"></i>
+                    </div>
+                    <h3>تصدير متقدم</h3>
+                    <p>حول أفكارك إلى مستندات احترافية، عروض تقديمية، أو تقارير بنقرة واحدة</p>
+                    <ul>
+                        <li>تصدير PDF عالي الجودة</li>
+                        <li>عروض تقديمية تفاعلية</li>
+                        <li>مستندات Word منسقة</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>أمان متقدم</h3>
+                    <p>حماية شاملة لبياناتك مع تشفير من طرف لطرف ونسخ احتياطية آمنة</p>
+                    <ul>
+                        <li>تشفير AES-256</li>
+                        <li>نسخ احتياطية تلقائية</li>
+                        <li>مصادقة ثنائية</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Demo -->
+    <section id="demo" class="demo">
+        <div class="container">
+            <div class="section-header">
+                <h2>جرب IdeaFlux الآن</h2>
+                <p>تفاعل مع منصة التفكير البصري مباشرة</p>
+            </div>
+            
+            <div class="demo-canvas" id="demo-canvas">
+                <div class="canvas-toolbar">
+                    <button class="tool-btn active" data-tool="select">
+                        <i class="fas fa-mouse-pointer"></i>
+                    </button>
+                    <button class="tool-btn" data-tool="note">
+                        <i class="fas fa-sticky-note"></i>
+                    </button>
+                    <button class="tool-btn" data-tool="idea">
+                        <i class="fas fa-lightbulb"></i>
+                    </button>
+                    <button class="tool-btn" data-tool="connection">
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                    <button class="tool-btn" data-tool="ai">
+                        <i class="fas fa-magic"></i>
+                    </button>
+                </div>
+                <div class="canvas-area" id="canvas-area">
+                    <div class="demo-note" style="top: 50px; left: 100px;">
+                        <i class="fas fa-lightbulb"></i>
+                        <span>فكرة البحث</span>
+                    </div>
+                    <div class="demo-note" style="top: 150px; left: 300px;">
+                        <i class="fas fa-book"></i>
+                        <span>مصادر مرجعية</span>
+                    </div>
+                    <div class="demo-note" style="top: 250px; left: 200px;">
+                        <i class="fas fa-chart-line"></i>
+                        <span>تحليل البيانات</span>
+                    </div>
+                    <svg class="connections-svg">
+                        <line x1="150" y1="80" x2="320" y2="180" stroke="#4F46E5" stroke-width="2"/>
+                        <line x1="320" y1="180" x2="220" y2="280" stroke="#4F46E5" stroke-width="2"/>
+                    </svg>
+                </div>
+                <div class="demo-instructions">
+                    <p><i class="fas fa-info-circle"></i> انقر على الأدوات أعلاه أو اسحب العناصر للتفاعل</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Templates Section -->
+    <section id="templates" class="templates">
+        <div class="container">
+            <div class="section-header">
+                <h2>قوالب احترافية جاهزة</h2>
+                <p>ابدأ بقوالب مصممة خصيصاً لاحتياجاتك</p>
+            </div>
+            
+            <div class="template-categories">
+                <button class="category-btn active" data-category="all">الكل</button>
+                <button class="category-btn" data-category="research">بحث علمي</button>
+                <button class="category-btn" data-category="business">أعمال</button>
+                <button class="category-btn" data-category="education">تعليم</button>
+                <button class="category-btn" data-category="personal">شخصي</button>
+            </div>
+
+            <div class="templates-grid">
+                <div class="template-card" data-category="research">
+                    <div class="template-preview">
+                        <div class="template-icon">
+                            <i class="fas fa-microscope"></i>
+                        </div>
+                    </div>
+                    <div class="template-info">
+                        <h3>خطة البحث العلمي</h3>
+                        <p>قالب شامل لتنظيم البحوث الأكاديمية والعلمية</p>
+                        <div class="template-tags">
+                            <span class="tag">بحث</span>
+                            <span class="tag">أكاديمي</span>
+                        </div>
+                        <button class="btn btn-outline">استخدم القالب</button>
                     </div>
                 </div>
 
-                <!-- Templates -->
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-template"></i>
+                <div class="template-card" data-category="business">
+                    <div class="template-preview">
+                        <div class="template-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
                     </div>
-                    <h3>قوالب حصرية</h3>
-                    <p>اختر من القوالب لتتعلم وتبحث مثل المحترفين! صممنا قوالبنا لتظهر أفضل الممارسات</p>
-                    <div class="feature-enhancement">
-                        <i class="fas fa-crown"></i>
-                        <span>100+ قالب مجاني (مقابل 10 في Scrintal)</span>
+                    <div class="template-info">
+                        <h3>استراتيجية الأعمال</h3>
+                        <p>خطط وطور استراتيجية عملك بطريقة بصرية</p>
+                        <div class="template-tags">
+                            <span class="tag">أعمال</span>
+                            <span class="tag">استراتيجية</span>
+                        </div>
+                        <button class="btn btn-outline">استخدم القالب</button>
+                    </div>
+                </div>
+
+                <div class="template-card" data-category="education">
+                    <div class="template-preview">
+                        <div class="template-icon">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                    </div>
+                    <div class="template-info">
+                        <h3>خريطة المفاهيم التعليمية</h3>
+                        <p>نظم المفاهيم التعليمية بطريقة تفاعلية</p>
+                        <div class="template-tags">
+                            <span class="tag">تعليم</span>
+                            <span class="tag">مفاهيم</span>
+                        </div>
+                        <button class="btn btn-outline">استخدم القالب</button>
+                    </div>
+                </div>
+
+                <div class="template-card" data-category="personal">
+                    <div class="template-preview">
+                        <div class="template-icon">
+                            <i class="fas fa-user-cog"></i>
+                        </div>
+                    </div>
+                    <div class="template-info">
+                        <h3>خطة التطوير الشخصي</h3>
+                        <p>حدد أهدافك وخطط لتطويرك الشخصي</p>
+                        <div class="template-tags">
+                            <span class="tag">شخصي</span>
+                            <span class="tag">أهداف</span>
+                        </div>
+                        <button class="btn btn-outline">استخدم القالب</button>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Interactive Canvas Demo -->
-    <section class="interactive-demo">
+    <!-- Pricing Section -->
+    <section id="pricing" class="pricing">
         <div class="container">
             <div class="section-header">
-                <h2>جرب ThinkCanvas <span class="highlight">الآن</span></h2>
-                <p>تفاعل مع اللوحة أدناه - اسحب العناصر، أنشئ روابط، واستكشف الإمكانيات</p>
+                <h2>مجاني بالكامل - إلى الأبد!</h2>
+                <p>نؤمن بأن التفكير الإبداعي حق للجميع</p>
             </div>
-            
-            <div class="demo-canvas" id="demoCanvas">
-                <div class="demo-toolbar">
-                    <button class="tool-btn active" data-tool="select">
-                        <i class="fas fa-mouse-pointer"></i>
-                        اختيار
-                    </button>
-                    <button class="tool-btn" data-tool="note">
-                        <i class="fas fa-sticky-note"></i>
-                        ملاحظة
-                    </button>
-                    <button class="tool-btn" data-tool="image">
-                        <i class="fas fa-image"></i>
-                        صورة
-                    </button>
-                    <button class="tool-btn" data-tool="connect">
-                        <i class="fas fa-link"></i>
-                        ربط
-                    </button>
-                    <button class="tool-btn" data-tool="ai">
-                        <i class="fas fa-robot"></i>
-                        ذكي
-                    </button>
-                </div>
-                <div class="canvas-area" id="canvasArea">
-                    <div class="canvas-node" style="top: 100px; left: 100px;" data-type="note">
-                        <div class="node-header">
-                            <i class="fas fa-sticky-note"></i>
-                            <span>ملاحظتي الأولى</span>
-                        </div>
-                        <div class="node-content">
-                            انقر هنا للتعديل...
-                        </div>
-                    </div>
-                    <div class="canvas-node" style="top: 200px; left: 300px;" data-type="ai">
-                        <div class="node-header">
-                            <i class="fas fa-robot"></i>
-                            <span>مساعد ذكي</span>
-                        </div>
-                        <div class="node-content">
-                            مرحباً! كيف يمكنني مساعدتك اليوم؟
-                        </div>
+
+            <div class="pricing-card-single">
+                <div class="pricing-header">
+                    <h3>IdeaFlux المجاني</h3>
+                    <div class="price">
+                        <span class="currency">مجاني</span>
+                        <span class="period">إلى الأبد</span>
                     </div>
                 </div>
-                <svg class="canvas-connections" id="canvasConnections">
-                    <!-- الروابط ستضاف هنا ديناميكياً -->
-                </svg>
+                <div class="pricing-features">
+                    <div class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>قماش لانهائي بلا قيود</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>تعاون مع فرق غير محدودة</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>تخزين سحابي 10 جيجا</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>جميع القوالب الاحترافية</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>مساعد ذكي متقدم</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>تصدير لجميع التنسيقات</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>دعم فني 24/7</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>تحديثات دائمة</span>
+                    </div>
+                </div>
+                <div class="pricing-footer">
+                    <button class="btn btn-primary btn-large" onclick="startFreeCanvas()">
+                        ابدأ الآن - مجاناً
+                    </button>
+                    <p class="no-credit-card">لا حاجة لبطاقة ائتمان</p>
+                </div>
+            </div>
+
+            <div class="why-free">
+                <h3>لماذا مجاني؟</h3>
+                <p>نحن نؤمن بتمكين المبدعين والباحثين في العالم العربي. هدفنا هو دعم التعلم والابتكار، 
+                وليس الربح. يتم دعم المنصة من خلال شراكات تعليمية ومؤسسية.</p>
             </div>
         </div>
     </section>
@@ -264,46 +462,43 @@
     <section class="testimonials">
         <div class="container">
             <div class="section-header">
-                <h2>ماذا يقول <span class="highlight">المستخدمون</span></h2>
-                <p>انضم إلى آلاف المتعلمين الذين يكتشفون أفضل أفكارهم!</p>
+                <h2>ماذا يقول مستخدمونا</h2>
+                <p>انضم لآلاف المبدعين الذين يثقون في IdeaFlux</p>
             </div>
             
             <div class="testimonials-grid">
                 <div class="testimonial-card">
                     <div class="testimonial-content">
-                        <p>"ThinkCanvas يتفوق على Scrintal! الواجهة أسرع والميزات أكثر. الأهم أنه مجاني تماماً!"</p>
+                        <p>"IdeaFlux غيّر طريقة تفكيري في البحث. القماش اللانهائي والدعم العربي الكامل جعلني أنظم أفكاري بطريقة لم أتخيلها من قبل."</p>
                     </div>
                     <div class="testimonial-author">
-                        <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=60&h=60&fit=crop&crop=face" alt="أحمد محمد">
-                        <div>
-                            <h4>أحمد محمد</h4>
-                            <span>باحث أكاديمي</span>
+                        <div class="author-info">
+                            <h4>د. سارة أحمد</h4>
+                            <span>باحثة أكاديمية</span>
                         </div>
                     </div>
                 </div>
 
                 <div class="testimonial-card">
                     <div class="testimonial-content">
-                        <p>"استخدمت Scrintal لمدة عام، لكن ThinkCanvas أفضل بكثير. القوالب المجانية والذكاء الاصطناعي مذهل!"</p>
+                        <p>"بعد تجربة Scrintal وMiro، وجدت في IdeaFlux البديل المثالي. مجاني بالكامل ومصمم للمستخدم العربي."</p>
                     </div>
                     <div class="testimonial-author">
-                        <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?w=60&h=60&fit=crop&crop=face" alt="سارة أحمد">
-                        <div>
-                            <h4>سارة أحمد</h4>
-                            <span>طالبة دكتوراه</span>
+                        <div class="author-info">
+                            <h4>محمد الخالد</h4>
+                            <span>مطور منتجات</span>
                         </div>
                     </div>
                 </div>
 
                 <div class="testimonial-card">
                     <div class="testimonial-content">
-                        <p>"أخيراً منصة مجانية تماماً للتعلم المرئي! ThinkCanvas غيّر طريقة تنظيمي للمعلومات."</p>
+                        <p>"الذكاء الاصطناعي في IdeaFlux يفهم السياق العربي بشكل ممتاز. يساعدني في تنظيم محاضراتي والتفاعل مع طلابي."</p>
                     </div>
                     <div class="testimonial-author">
-                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=60&h=60&fit=crop&crop=face" alt="محمد علي">
-                        <div>
-                            <h4>محمد علي</h4>
-                            <span>مطور برمجيات</span>
+                        <div class="author-info">
+                            <h4>أ. فاطمة العلي</h4>
+                            <span>أستاذة جامعية</span>
                         </div>
                     </div>
                 </div>
@@ -311,121 +506,65 @@
         </div>
     </section>
 
-    <!-- Pricing -->
-    <section id="pricing" class="pricing">
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
         <div class="container">
-            <div class="section-header">
-                <h2><span class="highlight">مجاني للأبد</span> - بلا حدود</h2>
-                <p>على عكس Scrintal والمنافسين الآخرين، ThinkCanvas مجاني 100% مع جميع الميزات!</p>
-            </div>
-            
-            <div class="pricing-comparison">
-                <div class="comparison-table">
-                    <div class="table-header">
-                        <div class="feature-col">الميزة</div>
-                        <div class="competitor-col">Scrintal</div>
-                        <div class="competitor-col">Miro</div>
-                        <div class="our-col">ThinkCanvas</div>
-                    </div>
+            <div class="contact-content">
+                <div class="contact-info">
+                    <h2>تواصل معنا</h2>
+                    <p>هل لديك سؤال أو اقتراح؟ نحن هنا لمساعدتك</p>
                     
-                    <div class="table-row">
-                        <div class="feature-col">لوحة لا نهائية</div>
-                        <div class="competitor-col">
-                            <i class="fas fa-check" style="color: orange;"></i>
-                            <small>مدفوع</small>
+                    <div class="contact-methods">
+                        <div class="contact-method">
+                            <i class="fas fa-envelope"></i>
+                            <div>
+                                <h4>البريد الإلكتروني</h4>
+                                <p>support@ideaflux.com</p>
+                            </div>
                         </div>
-                        <div class="competitor-col">
-                            <i class="fas fa-times" style="color: red;"></i>
-                            <small>محدود</small>
+                        <div class="contact-method">
+                            <i class="fas fa-comments"></i>
+                            <div>
+                                <h4>الدعم المباشر</h4>
+                                <p>متاح 24/7 عبر المحادثة</p>
+                            </div>
                         </div>
-                        <div class="our-col">
-                            <i class="fas fa-check" style="color: green;"></i>
-                            <strong>مجاني</strong>
-                        </div>
-                    </div>
-                    
-                    <div class="table-row">
-                        <div class="feature-col">ذكاء اصطناعي</div>
-                        <div class="competitor-col">
-                            <i class="fas fa-check" style="color: orange;"></i>
-                            <small>$15/شهر</small>
-                        </div>
-                        <div class="competitor-col">
-                            <i class="fas fa-times" style="color: red;"></i>
-                            <small>غير متوفر</small>
-                        </div>
-                        <div class="our-col">
-                            <i class="fas fa-check" style="color: green;"></i>
-                            <strong>مجاني</strong>
-                        </div>
-                    </div>
-                    
-                    <div class="table-row">
-                        <div class="feature-col">تعاون فوري</div>
-                        <div class="competitor-col">
-                            <i class="fas fa-check" style="color: orange;"></i>
-                            <small>$8/شهر</small>
-                        </div>
-                        <div class="competitor-col">
-                            <i class="fas fa-check" style="color: orange;"></i>
-                            <small>$10/شهر</small>
-                        </div>
-                        <div class="our-col">
-                            <i class="fas fa-check" style="color: green;"></i>
-                            <strong>مجاني</strong>
-                        </div>
-                    </div>
-                    
-                    <div class="table-row">
-                        <div class="feature-col">قوالب جاهزة</div>
-                        <div class="competitor-col">
-                            <i class="fas fa-check" style="color: orange;"></i>
-                            <small>10 قوالب</small>
-                        </div>
-                        <div class="competitor-col">
-                            <i class="fas fa-check" style="color: orange;"></i>
-                            <small>20 قالب</small>
-                        </div>
-                        <div class="our-col">
-                            <i class="fas fa-check" style="color: green;"></i>
-                            <strong>100+ قالب</strong>
+                        <div class="contact-method">
+                            <i class="fas fa-book"></i>
+                            <div>
+                                <h4>مركز المساعدة</h4>
+                                <p>أدلة شاملة وإجابات</p>
+                            </div>
                         </div>
                     </div>
                 </div>
                 
-                <div class="pricing-cta">
-                    <h3>لماذا ThinkCanvas؟</h3>
-                    <ul>
-                        <li><i class="fas fa-heart"></i> مجاني 100% للأبد - بلا اشتراكات</li>
-                        <li><i class="fas fa-rocket"></i> أداء أسرع 3x من المنافسين</li>
-                        <li><i class="fas fa-language"></i> دعم كامل للعربية</li>
-                        <li><i class="fas fa-users"></i> مجتمع نشط وداعم</li>
-                        <li><i class="fas fa-shield-alt"></i> خصوصية وأمان متقدم</li>
-                    </ul>
-                    <button class="btn-primary-large" onclick="startCanvas()">
-                        <i class="fas fa-gift"></i>
-                        ابدأ مجاناً الآن
-                    </button>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Call to Action -->
-    <section class="cta">
-        <div class="container">
-            <div class="cta-content">
-                <h2>انضم إلى آلاف المتعلمين اليوم</h2>
-                <p>اكتشف إمكانياتك الحقيقية مع ThinkCanvas - المنصة المجانية للتفكير المرئي والتعلم العميق</p>
-                <div class="cta-buttons">
-                    <button class="btn-primary-large" onclick="startCanvas()">
-                        <i class="fas fa-play"></i>
-                        ابدأ الآن مجاناً
-                    </button>
-                    <button class="btn-secondary-large" onclick="learnMore()">
-                        <i class="fas fa-info-circle"></i>
-                        تعلم المزيد
-                    </button>
+                <div class="contact-form">
+                    <form id="contact-form">
+                        <div class="form-group">
+                            <label for="name">الاسم</label>
+                            <input type="text" id="name" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">البريد الإلكتروني</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="subject">الموضوع</label>
+                            <select id="subject" name="subject" required>
+                                <option value="">اختر الموضوع</option>
+                                <option value="support">دعم فني</option>
+                                <option value="feedback">ملاحظات</option>
+                                <option value="partnership">شراكة</option>
+                                <option value="other">أخرى</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="message">الرسالة</label>
+                            <textarea id="message" name="message" rows="5" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">إرسال الرسالة</button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -437,14 +576,14 @@
             <div class="footer-content">
                 <div class="footer-section">
                     <div class="footer-logo">
-                        <i class="fas fa-palette"></i>
-                        <span>ThinkCanvas</span>
+                        <i class="fas fa-brain"></i>
+                        <span>IdeaFlux</span>
                     </div>
-                    <p>منصة التعلم المرئي والإبداع اللامحدود</p>
+                    <p>منصة التفكير البصري الأولى المصممة للمستخدم العربي. مجانية بالكامل وإلى الأبد.</p>
                     <div class="social-links">
                         <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-facebook"></i></a>
                         <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
                         <a href="#"><i class="fab fa-github"></i></a>
                     </div>
                 </div>
@@ -455,7 +594,7 @@
                         <li><a href="#features">الميزات</a></li>
                         <li><a href="#templates">القوالب</a></li>
                         <li><a href="#pricing">الأسعار</a></li>
-                        <li><a href="#">التحديثات</a></li>
+                        <li><a href="#">تحديثات</a></li>
                     </ul>
                 </div>
                 
@@ -463,9 +602,9 @@
                     <h4>الدعم</h4>
                     <ul>
                         <li><a href="#">مركز المساعدة</a></li>
-                        <li><a href="#">الدروس التعليمية</a></li>
-                        <li><a href="#">المجتمع</a></li>
-                        <li><a href="#contact">التواصل</a></li>
+                        <li><a href="#contact">تواصل معنا</a></li>
+                        <li><a href="#">الأسئلة الشائعة</a></li>
+                        <li><a href="#">تقرير مشكلة</a></li>
                     </ul>
                 </div>
                 
@@ -473,19 +612,99 @@
                     <h4>الشركة</h4>
                     <ul>
                         <li><a href="#">من نحن</a></li>
-                        <li><a href="#">المدونة</a></li>
-                        <li><a href="#">الوظائف</a></li>
-                        <li><a href="#">الخصوصية</a></li>
+                        <li><a href="#">سياسة الخصوصية</a></li>
+                        <li><a href="#">شروط الاستخدام</a></li>
+                        <li><a href="#">الأمان</a></li>
                     </ul>
                 </div>
             </div>
             
             <div class="footer-bottom">
-                <p>&copy; 2025 ThinkCanvas. جميع الحقوق محفوظة.</p>
-                <p>مصنوع بـ <i class="fas fa-heart" style="color: #ef4444;"></i> للمتعلمين والمبدعين العرب</p>
+                <div class="footer-text">
+                    <p>&copy; 2024 IdeaFlux. جميع الحقوق محفوظة.</p>
+                </div>
+                <div class="footer-links">
+                    <a href="#">سياسة الخصوصية</a>
+                    <a href="#">شروط الاستخدام</a>
+                    <a href="#">ملفات تعريف الارتباط</a>
+                </div>
             </div>
         </div>
     </footer>
+
+    <!-- Modals -->
+    <div id="login-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>تسجيل الدخول</h3>
+                <span class="close" onclick="closeModal('login')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="login-form">
+                    <div class="form-group">
+                        <label for="login-email">البريد الإلكتروني</label>
+                        <input type="email" id="login-email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">كلمة المرور</label>
+                        <input type="password" id="login-password" name="password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-full">تسجيل الدخول</button>
+                </form>
+                <div class="modal-footer">
+                    <p>ليس لديك حساب؟ <a href="#" onclick="switchModal('login', 'signup')">إنشاء حساب جديد</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="signup-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>إنشاء حساب جديد</h3>
+                <span class="close" onclick="closeModal('signup')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="signup-form">
+                    <div class="form-group">
+                        <label for="signup-name">الاسم الكامل</label>
+                        <input type="text" id="signup-name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-email">البريد الإلكتروني</label>
+                        <input type="email" id="signup-email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-password">كلمة المرور</label>
+                        <input type="password" id="signup-password" name="password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-full">إنشاء الحساب</button>
+                </form>
+                <div class="modal-footer">
+                    <p>لديك حساب؟ <a href="#" onclick="switchModal('signup', 'login')">تسجيل الدخول</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Demo Video Modal -->
+    <div id="demo-modal" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3>عرض توضيحي - IdeaFlux</h3>
+                <span class="close" onclick="closeModal('demo')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="video-container">
+                    <div class="video-placeholder">
+                        <i class="fas fa-play-circle"></i>
+                        <p>عرض توضيحي تفاعلي لجميع ميزات IdeaFlux</p>
+                        <button class="btn btn-primary" onclick="startInteractiveDemo()">ابدأ العرض التفاعلي</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script src="script.js"></script>
 </body>

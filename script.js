@@ -1,1231 +1,805 @@
-// ThinkCanvas - Advanced Interactive Mind Mapping Platform
-// Enhanced version of Scrintal with better features and performance
-
-class ThinkCanvas {
+// IdeaFlux - Advanced Interactive JavaScript
+class IdeaFlux {
     constructor() {
+        this.currentTool = 'select';
         this.canvas = null;
-        this.ctx = null;
-        this.elements = [];
         this.connections = [];
-        this.selectedElement = null;
+        this.elements = [];
+        this.dragElement = null;
         this.isDragging = false;
         this.dragOffset = { x: 0, y: 0 };
-        this.currentTool = 'select';
-        this.zoom = 1;
-        this.pan = { x: 0, y: 0 };
-        this.isConnecting = false;
+        this.isDrawingConnection = false;
         this.connectionStart = null;
-        this.aiAssistant = new AIAssistant();
-        this.collaborationManager = new CollaborationManager();
-        this.templateManager = new TemplateManager();
         
         this.init();
     }
-
+    
     init() {
         this.setupEventListeners();
-        this.initializeCanvas();
-        this.initializeUI();
-        this.setupIntersectionObserver();
-        this.loadAutoSave();
+        this.initializeAnimations();
+        this.setupNavigation();
+        this.setupDemo();
+        this.setupTemplates();
+        this.setupModals();
+        this.setupForms();
     }
-
+    
     setupEventListeners() {
-        // Navigation scroll effect
+        // Scroll effect for navbar
         window.addEventListener('scroll', this.handleScroll.bind(this));
         
-        // Mobile menu toggle
-        const hamburger = document.querySelector('.hamburger');
-        if (hamburger) {
-            hamburger.addEventListener('click', this.toggleMobileMenu.bind(this));
+        // Hamburger menu
+        const hamburger = document.getElementById('hamburger');
+        const navMenu = document.getElementById('nav-menu');
+        
+        if (hamburger && navMenu) {
+            hamburger.addEventListener('click', () => {
+                hamburger.classList.toggle('active');
+                navMenu.classList.toggle('active');
+            });
         }
-
+        
         // Smooth scrolling for navigation links
-        document.querySelectorAll('.nav-link').forEach(link => {
-            link.addEventListener('click', this.handleSmoothScroll.bind(this));
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', (e) => {
+                e.preventDefault();
+                const target = document.querySelector(anchor.getAttribute('href'));
+                if (target) {
+                    const offsetTop = target.offsetTop - 80;
+                    window.scrollTo({
+                        top: offsetTop,
+                        behavior: 'smooth'
+                    });
+                }
+            });
         });
-
-        // Interactive demo canvas
-        this.setupDemoCanvas();
         
-        // Tool buttons
-        document.querySelectorAll('.tool-btn').forEach(btn => {
-            btn.addEventListener('click', this.handleToolSelect.bind(this));
-        });
-
+        // Global click handler
+        document.addEventListener('click', this.handleGlobalClick.bind(this));
+        
         // Keyboard shortcuts
-        document.addEventListener('keydown', this.handleKeyboardShortcuts.bind(this));
-        
-        // Window resize
-        window.addEventListener('resize', this.handleResize.bind(this));
+        document.addEventListener('keydown', this.handleKeydown.bind(this));
     }
-
+    
     handleScroll() {
         const navbar = document.querySelector('.navbar');
-        if (window.scrollY > 50) {
+        if (window.scrollY > 100) {
             navbar.classList.add('scrolled');
         } else {
             navbar.classList.remove('scrolled');
         }
     }
-
-    toggleMobileMenu() {
-        const navMenu = document.querySelector('.nav-menu');
-        const navActions = document.querySelector('.nav-actions');
-        const hamburger = document.querySelector('.hamburger');
-        
-        navMenu.classList.toggle('active');
-        navActions.classList.toggle('active');
-        hamburger.classList.toggle('active');
+    
+    handleGlobalClick(e) {
+        // Close modals when clicking outside
+        if (e.target.classList.contains('modal')) {
+            this.closeModal(e.target.id.replace('-modal', ''));
+        }
     }
-
-    handleSmoothScroll(e) {
-        e.preventDefault();
-        const targetId = e.target.getAttribute('href');
-        if (targetId && targetId.startsWith('#')) {
-            const targetElement = document.querySelector(targetId);
-            if (targetElement) {
-                targetElement.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
+    
+    handleKeydown(e) {
+        // Keyboard shortcuts
+        if (e.ctrlKey || e.metaKey) {
+            switch(e.key) {
+                case 's':
+                    e.preventDefault();
+                    this.saveCanvas();
+                    break;
+                case 'n':
+                    e.preventDefault();
+                    this.startFreeCanvas();
+                    break;
             }
         }
-    }
-
-    setupDemoCanvas() {
-        const canvasArea = document.getElementById('canvasArea');
-        const canvasConnections = document.getElementById('canvasConnections');
         
-        if (!canvasArea || !canvasConnections) return;
-
-        // Make nodes draggable
-        const nodes = canvasArea.querySelectorAll('.canvas-node');
-        nodes.forEach(node => {
-            this.makeNodeDraggable(node);
-        });
-
-        // Canvas interactions
-        canvasArea.addEventListener('click', this.handleCanvasClick.bind(this));
-        canvasArea.addEventListener('dblclick', this.handleCanvasDoubleClick.bind(this));
-    }
-
-    makeNodeDraggable(node) {
-        let isDragging = false;
-        let startPos = { x: 0, y: 0 };
-        let nodePos = { x: 0, y: 0 };
-
-        node.addEventListener('mousedown', (e) => {
-            isDragging = true;
-            startPos.x = e.clientX;
-            startPos.y = e.clientY;
-            
-            const rect = node.getBoundingClientRect();
-            const parentRect = node.parentElement.getBoundingClientRect();
-            nodePos.x = rect.left - parentRect.left;
-            nodePos.y = rect.top - parentRect.top;
-            
-            node.style.zIndex = '1000';
-            node.classList.add('dragging');
-            
-            e.preventDefault();
-        });
-
-        document.addEventListener('mousemove', (e) => {
-            if (!isDragging) return;
-            
-            const deltaX = e.clientX - startPos.x;
-            const deltaY = e.clientY - startPos.y;
-            
-            const newX = Math.max(0, Math.min(nodePos.x + deltaX, node.parentElement.clientWidth - node.clientWidth));
-            const newY = Math.max(0, Math.min(nodePos.y + deltaY, node.parentElement.clientHeight - node.clientHeight));
-            
-            node.style.left = newX + 'px';
-            node.style.top = newY + 'px';
-            
-            this.updateConnections();
-        });
-
-        document.addEventListener('mouseup', () => {
-            if (isDragging) {
-                isDragging = false;
-                node.style.zIndex = '';
-                node.classList.remove('dragging');
-                this.autoSave();
-            }
-        });
-
-        // Touch events for mobile
-        node.addEventListener('touchstart', (e) => {
-            const touch = e.touches[0];
-            isDragging = true;
-            startPos.x = touch.clientX;
-            startPos.y = touch.clientY;
-            
-            const rect = node.getBoundingClientRect();
-            const parentRect = node.parentElement.getBoundingClientRect();
-            nodePos.x = rect.left - parentRect.left;
-            nodePos.y = rect.top - parentRect.top;
-            
-            node.style.zIndex = '1000';
-            e.preventDefault();
-        });
-
-        document.addEventListener('touchmove', (e) => {
-            if (!isDragging) return;
-            
-            const touch = e.touches[0];
-            const deltaX = touch.clientX - startPos.x;
-            const deltaY = touch.clientY - startPos.y;
-            
-            const newX = Math.max(0, Math.min(nodePos.x + deltaX, node.parentElement.clientWidth - node.clientWidth));
-            const newY = Math.max(0, Math.min(nodePos.y + deltaY, node.parentElement.clientHeight - node.clientHeight));
-            
-            node.style.left = newX + 'px';
-            node.style.top = newY + 'px';
-            
-            this.updateConnections();
-            e.preventDefault();
-        });
-
-        document.addEventListener('touchend', () => {
-            if (isDragging) {
-                isDragging = false;
-                node.style.zIndex = '';
-                this.autoSave();
-            }
-        });
-    }
-
-    handleToolSelect(e) {
-        const tool = e.currentTarget.dataset.tool;
-        this.currentTool = tool;
-        
-        // Update UI
-        document.querySelectorAll('.tool-btn').forEach(btn => {
-            btn.classList.remove('active');
-        });
-        e.currentTarget.classList.add('active');
-        
-        // Update cursor
-        const canvasArea = document.getElementById('canvasArea');
-        if (canvasArea) {
-            canvasArea.className = `canvas-area tool-${tool}`;
-        }
-    }
-
-    handleCanvasClick(e) {
-        if (e.target.classList.contains('canvas-area')) {
-            this.createNewElement(e);
-        }
-    }
-
-    handleCanvasDoubleClick(e) {
-        if (e.target.classList.contains('canvas-node')) {
-            this.editElement(e.target);
-        }
-    }
-
-    createNewElement(e) {
-        const rect = e.currentTarget.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        
-        let elementHtml = '';
-        const id = 'node-' + Date.now();
-        
-        switch (this.currentTool) {
-            case 'note':
-                elementHtml = this.createNoteElement(id, x, y);
-                break;
-            case 'image':
-                elementHtml = this.createImageElement(id, x, y);
-                break;
-            case 'ai':
-                elementHtml = this.createAIElement(id, x, y);
-                break;
-        }
-        
-        if (elementHtml) {
-            e.currentTarget.insertAdjacentHTML('beforeend', elementHtml);
-            const newElement = document.getElementById(id);
-            this.makeNodeDraggable(newElement);
-            newElement.classList.add('fade-in');
-            this.autoSave();
-        }
-    }
-
-    createNoteElement(id, x, y) {
-        return `
-            <div class="canvas-node" id="${id}" style="top: ${y}px; left: ${x}px;" data-type="note">
-                <div class="node-header">
-                    <i class="fas fa-sticky-note"></i>
-                    <span>ملاحظة جديدة</span>
-                    <button class="node-delete" onclick="thinkCanvas.deleteElement('${id}')">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                <div class="node-content" contenteditable="true" placeholder="اكتب ملاحظتك هنا...">
-                    انقر للتحرير...
-                </div>
-            </div>
-        `;
-    }
-
-    createImageElement(id, x, y) {
-        return `
-            <div class="canvas-node" id="${id}" style="top: ${y}px; left: ${x}px;" data-type="image">
-                <div class="node-header">
-                    <i class="fas fa-image"></i>
-                    <span>صورة</span>
-                    <button class="node-delete" onclick="thinkCanvas.deleteElement('${id}')">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                <div class="node-content">
-                    <div class="image-upload" onclick="thinkCanvas.uploadImage('${id}')">
-                        <i class="fas fa-cloud-upload-alt"></i>
-                        <span>انقر لرفع صورة</span>
-                    </div>
-                </div>
-            </div>
-        `;
-    }
-
-    createAIElement(id, x, y) {
-        return `
-            <div class="canvas-node ai-node" id="${id}" style="top: ${y}px; left: ${x}px;" data-type="ai">
-                <div class="node-header">
-                    <i class="fas fa-robot"></i>
-                    <span>مساعد ذكي</span>
-                    <button class="node-delete" onclick="thinkCanvas.deleteElement('${id}')">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                <div class="node-content">
-                    <div class="ai-interface">
-                        <input type="text" placeholder="اسأل المساعد الذكي..." onkeypress="thinkCanvas.handleAIInput(event, '${id}')">
-                        <button onclick="thinkCanvas.askAI('${id}')">
-                            <i class="fas fa-paper-plane"></i>
-                        </button>
-                    </div>
-                    <div class="ai-response" id="ai-response-${id}">
-                        مرحباً! كيف يمكنني مساعدتك اليوم؟
-                    </div>
-                </div>
-            </div>
-        `;
-    }
-
-    deleteElement(id) {
-        const element = document.getElementById(id);
-        if (element) {
-            element.classList.add('scale-out');
-            setTimeout(() => {
-                element.remove();
-                this.updateConnections();
-                this.autoSave();
-            }, 300);
-        }
-    }
-
-    editElement(element) {
-        const content = element.querySelector('.node-content');
-        if (content && content.contentEditable !== 'true') {
-            content.contentEditable = true;
-            content.focus();
-            
-            // Select all text
-            const range = document.createRange();
-            range.selectNodeContents(content);
-            const selection = window.getSelection();
-            selection.removeAllRanges();
-            selection.addRange(range);
-        }
-    }
-
-    uploadImage(id) {
-        const input = document.createElement('input');
-        input.type = 'file';
-        input.accept = 'image/*';
-        input.onchange = (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    const img = document.createElement('img');
-                    img.src = e.target.result;
-                    img.style.maxWidth = '100%';
-                    img.style.borderRadius = '8px';
-                    
-                    const element = document.getElementById(id);
-                    const content = element.querySelector('.node-content');
-                    content.innerHTML = '';
-                    content.appendChild(img);
-                    
-                    this.autoSave();
-                };
-                reader.readAsDataURL(file);
-            }
-        };
-        input.click();
-    }
-
-    handleAIInput(event, id) {
-        if (event.key === 'Enter') {
-            this.askAI(id);
-        }
-    }
-
-    async askAI(id) {
-        const element = document.getElementById(id);
-        const input = element.querySelector('input');
-        const responseDiv = element.querySelector('.ai-response');
-        const question = input.value.trim();
-        
-        if (!question) return;
-        
-        // Show loading
-        responseDiv.innerHTML = '<div class="loading"></div> جاري التفكير...';
-        
-        try {
-            // Simulate AI response (in real app, this would call actual AI API)
-            const response = await this.aiAssistant.getResponse(question);
-            
-            setTimeout(() => {
-                responseDiv.innerHTML = response;
-                input.value = '';
-                this.autoSave();
-            }, 1000);
-            
-        } catch (error) {
-            responseDiv.innerHTML = 'عذراً، حدث خطأ. يرجى المحاولة مرة أخرى.';
-        }
-    }
-
-    updateConnections() {
-        const svg = document.getElementById('canvasConnections');
-        if (!svg) return;
-        
-        // Clear existing connections
-        svg.innerHTML = '';
-        
-        // Add sample connections for demo
-        const nodes = document.querySelectorAll('.canvas-node');
-        if (nodes.length >= 2) {
-            const node1 = nodes[0];
-            const node2 = nodes[1];
-            
-            const rect1 = node1.getBoundingClientRect();
-            const rect2 = node2.getBoundingClientRect();
-            const svgRect = svg.getBoundingClientRect();
-            
-            const x1 = rect1.left - svgRect.left + rect1.width / 2;
-            const y1 = rect1.top - svgRect.top + rect1.height / 2;
-            const x2 = rect2.left - svgRect.left + rect2.width / 2;
-            const y2 = rect2.top - svgRect.top + rect2.height / 2;
-            
-            const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-            const d = `M ${x1} ${y1} Q ${(x1 + x2) / 2} ${Math.min(y1, y2) - 50} ${x2} ${y2}`;
-            
-            path.setAttribute('d', d);
-            path.setAttribute('stroke', '#4f46e5');
-            path.setAttribute('stroke-width', '2');
-            path.setAttribute('fill', 'none');
-            path.setAttribute('stroke-dasharray', '5,5');
-            
-            // Add animation
-            const animate = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
-            animate.setAttribute('attributeName', 'stroke-dashoffset');
-            animate.setAttribute('values', '0;10');
-            animate.setAttribute('dur', '1s');
-            animate.setAttribute('repeatCount', 'indefinite');
-            
-            path.appendChild(animate);
-            svg.appendChild(path);
-        }
-    }
-
-    handleKeyboardShortcuts(e) {
-        // Ctrl/Cmd + S for save
-        if ((e.ctrlKey || e.metaKey) && e.key === 's') {
-            e.preventDefault();
-            this.saveProject();
-        }
-        
-        // Ctrl/Cmd + Z for undo
-        if ((e.ctrlKey || e.metaKey) && e.key === 'z') {
-            e.preventDefault();
-            this.undo();
-        }
-        
-        // Delete key for deleting selected element
-        if (e.key === 'Delete' && this.selectedElement) {
-            this.deleteElement(this.selectedElement.id);
-        }
-        
-        // Escape key to deselect
+        // ESC to close modals
         if (e.key === 'Escape') {
-            this.deselectAll();
+            this.closeAllModals();
         }
     }
-
-    handleResize() {
-        // Update canvas dimensions and element positions
-        this.updateConnections();
-    }
-
-    setupIntersectionObserver() {
+    
+    initializeAnimations() {
+        // Intersection Observer for scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    entry.target.classList.add('fade-in');
+                    entry.target.style.animation = 'fadeInUp 0.8s ease-out forwards';
                 }
             });
-        }, {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        });
-
-        // Observe all sections
-        document.querySelectorAll('section').forEach(section => {
-            observer.observe(section);
-        });
-
-        // Observe feature cards
-        document.querySelectorAll('.feature-card, .testimonial-card').forEach(card => {
-            observer.observe(card);
-        });
-    }
-
-    initializeCanvas() {
-        // Initialize main canvas for full application
-        const canvasContainer = document.querySelector('.canvas-container');
-        if (canvasContainer) {
-            this.canvas = document.createElement('canvas');
-            this.ctx = this.canvas.getContext('2d');
-            canvasContainer.appendChild(this.canvas);
-            this.resizeCanvas();
-        }
-    }
-
-    initializeUI() {
-        // Initialize UI components
-        this.setupToolbar();
-        this.setupPropertyPanel();
-        this.setupLayerPanel();
-    }
-
-    setupToolbar() {
-        // Advanced toolbar setup for full application
-    }
-
-    setupPropertyPanel() {
-        // Properties panel for selected elements
-    }
-
-    setupLayerPanel() {
-        // Layer management panel
-    }
-
-    autoSave() {
-        // Auto-save functionality
-        const data = this.exportData();
-        localStorage.setItem('thinkcanvas-autosave', JSON.stringify(data));
-    }
-
-    loadAutoSave() {
-        // Load auto-saved data
-        const saved = localStorage.getItem('thinkcanvas-autosave');
-        if (saved) {
-            try {
-                const data = JSON.parse(saved);
-                this.importData(data);
-            } catch (e) {
-                console.warn('Could not load auto-saved data:', e);
-            }
-        }
-    }
-
-    exportData() {
-        // Export canvas data
-        const nodes = Array.from(document.querySelectorAll('.canvas-node')).map(node => ({
-            id: node.id,
-            type: node.dataset.type,
-            position: {
-                x: parseInt(node.style.left),
-                y: parseInt(node.style.top)
-            },
-            content: node.querySelector('.node-content').innerHTML,
-            title: node.querySelector('.node-header span').textContent
-        }));
-
-        return {
-            version: '1.0',
-            timestamp: Date.now(),
-            nodes: nodes,
-            connections: this.connections,
-            settings: {
-                zoom: this.zoom,
-                pan: this.pan
-            }
-        };
-    }
-
-    importData(data) {
-        // Import canvas data
-        if (!data || !data.nodes) return;
+        }, observerOptions);
         
-        const canvasArea = document.getElementById('canvasArea');
+        // Observe elements for animation
+        document.querySelectorAll('.feature-card, .template-card, .testimonial-card').forEach(el => {
+            observer.observe(el);
+        });
+    }
+    
+    setupNavigation() {
+        // Active navigation highlighting
+        const sections = document.querySelectorAll('section[id]');
+        const navLinks = document.querySelectorAll('.nav-link');
+        
+        const observerOptions = {
+            threshold: 0.3
+        };
+        
+        const navObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const id = entry.target.getAttribute('id');
+                    navLinks.forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href') === `#${id}`) {
+                            link.classList.add('active');
+                        }
+                    });
+                }
+            });
+        }, observerOptions);
+        
+        sections.forEach(section => navObserver.observe(section));
+    }
+    
+    setupDemo() {
+        const canvasArea = document.getElementById('canvas-area');
+        const toolButtons = document.querySelectorAll('.tool-btn');
+        
         if (!canvasArea) return;
         
-        // Clear existing nodes
-        canvasArea.querySelectorAll('.canvas-node').forEach(node => node.remove());
-        
-        // Import nodes
-        data.nodes.forEach(nodeData => {
-            const element = this.createElementFromData(nodeData);
-            if (element) {
-                canvasArea.appendChild(element);
-                this.makeNodeDraggable(element);
-            }
+        // Tool selection
+        toolButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                toolButtons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                this.currentTool = btn.dataset.tool;
+                this.updateCursor();
+            });
         });
         
-        // Import connections
-        this.connections = data.connections || [];
-        this.updateConnections();
-    }
-
-    createElementFromData(nodeData) {
-        const element = document.createElement('div');
-        element.className = 'canvas-node fade-in';
-        element.id = nodeData.id;
-        element.dataset.type = nodeData.type;
-        element.style.left = nodeData.position.x + 'px';
-        element.style.top = nodeData.position.y + 'px';
+        // Canvas interactions
+        canvasArea.addEventListener('mousedown', this.handleCanvasMouseDown.bind(this));
+        canvasArea.addEventListener('mousemove', this.handleCanvasMouseMove.bind(this));
+        canvasArea.addEventListener('mouseup', this.handleCanvasMouseUp.bind(this));
         
-        element.innerHTML = `
-            <div class="node-header">
-                <i class="fas fa-${this.getIconForType(nodeData.type)}"></i>
-                <span>${nodeData.title}</span>
-                <button class="node-delete" onclick="thinkCanvas.deleteElement('${nodeData.id}')">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="node-content">${nodeData.content}</div>
+        // Make demo notes draggable
+        this.setupDraggableElements();
+    }
+    
+    setupDraggableElements() {
+        const demoNotes = document.querySelectorAll('.demo-note');
+        
+        demoNotes.forEach(note => {
+            note.addEventListener('mousedown', (e) => {
+                if (this.currentTool !== 'select') return;
+                
+                this.isDragging = true;
+                this.dragElement = note;
+                
+                const rect = note.getBoundingClientRect();
+                const canvasRect = document.getElementById('canvas-area').getBoundingClientRect();
+                
+                this.dragOffset.x = e.clientX - rect.left;
+                this.dragOffset.y = e.clientY - rect.top;
+                
+                note.style.cursor = 'grabbing';
+                note.style.zIndex = '1000';
+                
+                e.preventDefault();
+            });
+        });
+        
+        document.addEventListener('mousemove', (e) => {
+            if (!this.isDragging || !this.dragElement) return;
+            
+            const canvasRect = document.getElementById('canvas-area').getBoundingClientRect();
+            const x = e.clientX - canvasRect.left - this.dragOffset.x;
+            const y = e.clientY - canvasRect.top - this.dragOffset.y;
+            
+            this.dragElement.style.left = Math.max(0, Math.min(x, canvasRect.width - this.dragElement.offsetWidth)) + 'px';
+            this.dragElement.style.top = Math.max(0, Math.min(y, canvasRect.height - this.dragElement.offsetHeight)) + 'px';
+        });
+        
+        document.addEventListener('mouseup', () => {
+            if (this.isDragging && this.dragElement) {
+                this.dragElement.style.cursor = 'move';
+                this.dragElement.style.zIndex = '1';
+                this.isDragging = false;
+                this.dragElement = null;
+            }
+        });
+    }
+    
+    handleCanvasMouseDown(e) {
+        const canvasRect = e.currentTarget.getBoundingClientRect();
+        const x = e.clientX - canvasRect.left;
+        const y = e.clientY - canvasRect.top;
+        
+        switch(this.currentTool) {
+            case 'note':
+                this.addNote(x, y, 'ملاحظة جديدة');
+                break;
+            case 'idea':
+                this.addIdea(x, y, 'فكرة جديدة');
+                break;
+            case 'connection':
+                this.startConnection(x, y);
+                break;
+            case 'ai':
+                this.showAIHelper(x, y);
+                break;
+        }
+    }
+    
+    handleCanvasMouseMove(e) {
+        // Handle connection drawing
+        if (this.isDrawingConnection && this.connectionStart) {
+            // Update temporary connection line
+        }
+    }
+    
+    handleCanvasMouseUp(e) {
+        if (this.isDrawingConnection) {
+            const canvasRect = e.currentTarget.getBoundingClientRect();
+            const x = e.clientX - canvasRect.left;
+            const y = e.clientY - canvasRect.top;
+            this.endConnection(x, y);
+        }
+    }
+    
+    addNote(x, y, text) {
+        const canvasArea = document.getElementById('canvas-area');
+        const note = document.createElement('div');
+        note.className = 'demo-note';
+        note.style.left = x + 'px';
+        note.style.top = y + 'px';
+        note.innerHTML = `
+            <i class="fas fa-sticky-note"></i>
+            <span>${text}</span>
         `;
         
-        return element;
-    }
-
-    getIconForType(type) {
-        const icons = {
-            note: 'sticky-note',
-            image: 'image',
-            pdf: 'file-pdf',
-            video: 'video',
-            ai: 'robot',
-            text: 'align-left',
-            link: 'link'
-        };
-        return icons[type] || 'square';
-    }
-
-    saveProject() {
-        const data = this.exportData();
-        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `thinkcanvas-project-${new Date().toISOString().split('T')[0]}.json`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-    }
-
-    undo() {
-        // Undo functionality (simplified)
-        console.log('Undo functionality would be implemented here');
-    }
-
-    deselectAll() {
-        document.querySelectorAll('.canvas-node.selected').forEach(node => {
-            node.classList.remove('selected');
+        // Add edit functionality
+        note.addEventListener('dblclick', () => {
+            const span = note.querySelector('span');
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.value = span.textContent;
+            input.style.background = 'transparent';
+            input.style.border = 'none';
+            input.style.color = 'inherit';
+            input.style.font = 'inherit';
+            
+            span.replaceWith(input);
+            input.focus();
+            
+            const saveEdit = () => {
+                const newSpan = document.createElement('span');
+                newSpan.textContent = input.value;
+                input.replaceWith(newSpan);
+            };
+            
+            input.addEventListener('blur', saveEdit);
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    saveEdit();
+                }
+            });
         });
-        this.selectedElement = null;
-    }
-
-    resizeCanvas() {
-        if (!this.canvas) return;
         
-        const container = this.canvas.parentElement;
-        this.canvas.width = container.clientWidth;
-        this.canvas.height = container.clientHeight;
-    }
-}
-
-// AI Assistant Class
-class AIAssistant {
-    constructor() {
-        this.responses = {
-            'مرحبا': 'مرحباً بك في ThinkCanvas! كيف يمكنني مساعدتك اليوم؟',
-            'ما هو': 'ThinkCanvas هي منصة للتفكير المرئي والخرائط الذهنية التفاعلية',
-            'كيف': 'يمكنك البدء بإنشاء ملاحظة أو صورة وربطها بعناصر أخرى',
-            'مساعدة': 'يمكنني مساعدتك في:\n• إنشاء خرائط ذهنية\n• تنظيم الأفكار\n• ربط المفاهيم\n• إنشاء مخططات تعليمية',
-            'شكرا': 'العفو! أنا هنا دائماً لمساعدتك 😊'
-        };
+        canvasArea.appendChild(note);
+        this.makeElementDraggable(note);
+        this.showToast('تمت إضافة ملاحظة جديدة');
     }
     
-    async getResponse(question) {
-        // Simple keyword matching (in real app, this would use actual AI)
-        const lowerQuestion = question.toLowerCase();
+    addIdea(x, y, text) {
+        const canvasArea = document.getElementById('canvas-area');
+        const idea = document.createElement('div');
+        idea.className = 'demo-note';
+        idea.style.left = x + 'px';
+        idea.style.top = y + 'px';
+        idea.style.background = 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)';
+        idea.innerHTML = `
+            <i class="fas fa-lightbulb"></i>
+            <span>${text}</span>
+        `;
         
-        for (const [keyword, response] of Object.entries(this.responses)) {
-            if (lowerQuestion.includes(keyword)) {
-                return response;
-            }
-        }
-        
-        // Generate creative response based on question
-        if (lowerQuestion.includes('فكرة') || lowerQuestion.includes('إبداع')) {
-            return 'إليك بعض الأفكار الإبداعية:\n• استخدم الألوان للتصنيف\n• ارسم روابط بين المفاهيم\n• أضف صور توضيحية\n• استخدم الأشكال المختلفة';
-        }
-        
-        if (lowerQuestion.includes('تعلم') || lowerQuestion.includes('دراسة')) {
-            return 'لتحسين التعلم:\n• قسم المعلومات لأجزاء صغيرة\n• استخدم الخرائط الذهنية\n• اربط المعلومات الجديدة بما تعرفه\n• راجع المحتوى بانتظام';
-        }
-        
-        return 'سؤال رائع! يمكنني مساعدتك بشكل أفضل إذا كنت أكثر تحديداً. جرب أن تسأل عن الأفكار أو التعلم أو كيفية استخدام ThinkCanvas.';
-    }
-}
-
-// Collaboration Manager Class
-class CollaborationManager {
-    constructor() {
-        this.isConnected = false;
-        this.users = [];
-        this.cursors = new Map();
+        canvasArea.appendChild(idea);
+        this.makeElementDraggable(idea);
+        this.showToast('تمت إضافة فكرة جديدة');
     }
     
-    connect() {
-        // WebSocket connection for real-time collaboration
-        this.isConnected = true;
+    makeElementDraggable(element) {
+        element.addEventListener('mousedown', (e) => {
+            if (this.currentTool !== 'select') return;
+            
+            this.isDragging = true;
+            this.dragElement = element;
+            
+            const rect = element.getBoundingClientRect();
+            const canvasRect = document.getElementById('canvas-area').getBoundingClientRect();
+            
+            this.dragOffset.x = e.clientX - rect.left;
+            this.dragOffset.y = e.clientY - rect.top;
+            
+            element.style.cursor = 'grabbing';
+            element.style.zIndex = '1000';
+            
+            e.preventDefault();
+        });
     }
     
-    disconnect() {
-        this.isConnected = false;
+    startConnection(x, y) {
+        this.isDrawingConnection = true;
+        this.connectionStart = { x, y };
+        this.showToast('انقر على عنصر آخر لإنشاء رابط');
     }
     
-    broadcastChange(change) {
-        // Broadcast changes to other users
-        if (this.isConnected) {
-            // Send change via WebSocket
+    endConnection(x, y) {
+        if (this.connectionStart) {
+            this.createConnection(this.connectionStart, { x, y });
+            this.isDrawingConnection = false;
+            this.connectionStart = null;
         }
     }
     
-    handleRemoteChange(change) {
-        // Handle changes from other users
+    createConnection(start, end) {
+        const svg = document.querySelector('.connections-svg');
+        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        
+        line.setAttribute('x1', start.x);
+        line.setAttribute('y1', start.y);
+        line.setAttribute('x2', end.x);
+        line.setAttribute('y2', end.y);
+        line.setAttribute('stroke', '#4F46E5');
+        line.setAttribute('stroke-width', '2');
+        line.setAttribute('marker-end', 'url(#arrowhead)');
+        
+        svg.appendChild(line);
+        this.showToast('تم إنشاء رابط جديد');
     }
-}
-
-// Template Manager Class
-class TemplateManager {
-    constructor() {
-        this.templates = [
-            {
-                id: 'mind-map',
-                name: 'خريطة ذهنية أساسية',
-                description: 'قالب خريطة ذهنية للعصف الذهني',
-                category: 'تفكير'
-            },
-            {
-                id: 'project-planning',
-                name: 'تخطيط مشروع',
-                description: 'قالب لتخطيط وإدارة المشاريع',
-                category: 'عمل'
-            },
-            {
-                id: 'study-notes',
-                name: 'ملاحظات دراسية',
-                description: 'قالب لتنظيم المواد الدراسية',
-                category: 'تعليم'
-            },
-            {
-                id: 'research-board',
-                name: 'لوحة بحث',
-                description: 'قالب لتنظيم البحوث والمصادر',
-                category: 'بحث'
-            }
+    
+    showAIHelper(x, y) {
+        const aiSuggestions = [
+            'اقتراح: أضف مصادر مرجعية',
+            'اقتراح: نظم الأفكار حسب الأولوية',
+            'اقتراح: أضف ملخص للموضوع',
+            'اقتراح: أنشئ خريطة مفاهيم'
         ];
+        
+        const randomSuggestion = aiSuggestions[Math.floor(Math.random() * aiSuggestions.length)];
+        
+        const aiHelper = document.createElement('div');
+        aiHelper.className = 'ai-helper';
+        aiHelper.style.position = 'absolute';
+        aiHelper.style.left = x + 'px';
+        aiHelper.style.top = y + 'px';
+        aiHelper.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+        aiHelper.style.color = 'white';
+        aiHelper.style.padding = '1rem';
+        aiHelper.style.borderRadius = '0.5rem';
+        aiHelper.style.boxShadow = '0 10px 25px rgba(0,0,0,0.2)';
+        aiHelper.style.maxWidth = '200px';
+        aiHelper.style.zIndex = '1001';
+        aiHelper.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                <i class="fas fa-robot"></i>
+                <strong>مساعد ذكي</strong>
+            </div>
+            <p style="margin: 0; font-size: 0.9rem;">${randomSuggestion}</p>
+            <div style="margin-top: 0.5rem; display: flex; gap: 0.5rem;">
+                <button onclick="ideaFlux.acceptAISuggestion()" style="background: rgba(255,255,255,0.2); border: none; color: white; padding: 0.25rem 0.5rem; border-radius: 0.25rem; cursor: pointer; font-size: 0.8rem;">قبول</button>
+                <button onclick="ideaFlux.dismissAI()" style="background: rgba(255,255,255,0.2); border: none; color: white; padding: 0.25rem 0.5rem; border-radius: 0.25rem; cursor: pointer; font-size: 0.8rem;">إغلاق</button>
+            </div>
+        `;
+        
+        document.getElementById('canvas-area').appendChild(aiHelper);
+        
+        // Auto dismiss after 5 seconds
+        setTimeout(() => {
+            if (aiHelper.parentNode) {
+                aiHelper.remove();
+            }
+        }, 5000);
     }
     
-    getTemplates() {
-        return this.templates;
+    acceptAISuggestion() {
+        const aiHelpers = document.querySelectorAll('.ai-helper');
+        aiHelpers.forEach(helper => helper.remove());
+        this.showToast('تم تطبيق اقتراح المساعد الذكي');
     }
     
-    loadTemplate(templateId) {
-        // Load template data
-        const template = this.templates.find(t => t.id === templateId);
-        if (template) {
-            // Load template structure
-            return this.generateTemplateData(template);
+    dismissAI() {
+        const aiHelpers = document.querySelectorAll('.ai-helper');
+        aiHelpers.forEach(helper => helper.remove());
+    }
+    
+    updateCursor() {
+        const canvasArea = document.getElementById('canvas-area');
+        if (!canvasArea) return;
+        
+        const cursors = {
+            select: 'default',
+            note: 'crosshair',
+            idea: 'crosshair',
+            connection: 'crosshair',
+            ai: 'help'
+        };
+        
+        canvasArea.style.cursor = cursors[this.currentTool] || 'default';
+    }
+    
+    setupTemplates() {
+        const categoryButtons = document.querySelectorAll('.category-btn');
+        const templateCards = document.querySelectorAll('.template-card');
+        
+        categoryButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Update active button
+                categoryButtons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                const category = btn.dataset.category;
+                
+                // Filter templates
+                templateCards.forEach(card => {
+                    if (category === 'all' || card.dataset.category === category) {
+                        card.style.display = 'block';
+                        card.style.animation = 'fadeInUp 0.5s ease-out';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        });
+        
+        // Template card interactions
+        templateCards.forEach(card => {
+            const useButton = card.querySelector('.btn');
+            if (useButton) {
+                useButton.addEventListener('click', () => {
+                    this.useTemplate(card.dataset.category);
+                });
+            }
+        });
+    }
+    
+    useTemplate(category) {
+        this.showToast(`جاري تحميل قالب ${category}...`);
+        
+        // Simulate template loading
+        setTimeout(() => {
+            this.showToast('تم تحميل القالب بنجاح!');
+            // In a real app, this would open the canvas with the template
+            this.startFreeCanvas();
+        }, 1500);
+    }
+    
+    setupModals() {
+        // Close button functionality
+        document.querySelectorAll('.close').forEach(closeBtn => {
+            closeBtn.addEventListener('click', (e) => {
+                const modal = e.target.closest('.modal');
+                if (modal) {
+                    const modalId = modal.id.replace('-modal', '');
+                    this.closeModal(modalId);
+                }
+            });
+        });
+    }
+    
+    setupForms() {
+        // Contact form
+        const contactForm = document.getElementById('contact-form');
+        if (contactForm) {
+            contactForm.addEventListener('submit', this.handleContactSubmit.bind(this));
         }
-        return null;
-    }
-    
-    generateTemplateData(template) {
-        // Generate template structure based on type
-        switch (template.id) {
-            case 'mind-map':
-                return this.createMindMapTemplate();
-            case 'project-planning':
-                return this.createProjectTemplate();
-            case 'study-notes':
-                return this.createStudyTemplate();
-            case 'research-board':
-                return this.createResearchTemplate();
-            default:
-                return null;
+        
+        // Login form
+        const loginForm = document.getElementById('login-form');
+        if (loginForm) {
+            loginForm.addEventListener('submit', this.handleLoginSubmit.bind(this));
+        }
+        
+        // Signup form
+        const signupForm = document.getElementById('signup-form');
+        if (signupForm) {
+            signupForm.addEventListener('submit', this.handleSignupSubmit.bind(this));
         }
     }
     
-    createMindMapTemplate() {
-        return {
-            nodes: [
-                {
-                    id: 'central-idea',
-                    type: 'note',
-                    position: { x: 400, y: 200 },
-                    content: 'الفكرة المركزية',
-                    title: 'الفكرة الرئيسية'
-                },
-                {
-                    id: 'branch-1',
-                    type: 'note',
-                    position: { x: 200, y: 100 },
-                    content: 'فرع 1',
-                    title: 'فرع'
-                },
-                {
-                    id: 'branch-2',
-                    type: 'note',
-                    position: { x: 600, y: 100 },
-                    content: 'فرع 2',
-                    title: 'فرع'
-                },
-                {
-                    id: 'branch-3',
-                    type: 'note',
-                    position: { x: 200, y: 300 },
-                    content: 'فرع 3',
-                    title: 'فرع'
-                },
-                {
-                    id: 'branch-4',
-                    type: 'note',
-                    position: { x: 600, y: 300 },
-                    content: 'فرع 4',
-                    title: 'فرع'
-                }
-            ],
-            connections: [
-                { from: 'central-idea', to: 'branch-1' },
-                { from: 'central-idea', to: 'branch-2' },
-                { from: 'central-idea', to: 'branch-3' },
-                { from: 'central-idea', to: 'branch-4' }
-            ]
-        };
+    handleContactSubmit(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(e.target);
+        const data = Object.fromEntries(formData.entries());
+        
+        this.showToast('جاري إرسال الرسالة...');
+        
+        // Simulate form submission
+        setTimeout(() => {
+            this.showToast('تم إرسال رسالتك بنجاح! سنرد عليك قريباً.');
+            e.target.reset();
+        }, 2000);
     }
     
-    createProjectTemplate() {
-        return {
-            nodes: [
-                {
-                    id: 'project-title',
-                    type: 'note',
-                    position: { x: 350, y: 50 },
-                    content: 'عنوان المشروع',
-                    title: 'المشروع'
-                },
-                {
-                    id: 'objectives',
-                    type: 'note',
-                    position: { x: 150, y: 150 },
-                    content: 'الأهداف',
-                    title: 'الأهداف'
-                },
-                {
-                    id: 'timeline',
-                    type: 'note',
-                    position: { x: 350, y: 150 },
-                    content: 'الجدول الزمني',
-                    title: 'التوقيت'
-                },
-                {
-                    id: 'resources',
-                    type: 'note',
-                    position: { x: 550, y: 150 },
-                    content: 'الموارد المطلوبة',
-                    title: 'الموارد'
-                },
-                {
-                    id: 'tasks',
-                    type: 'note',
-                    position: { x: 250, y: 250 },
-                    content: 'المهام',
-                    title: 'المهام'
-                },
-                {
-                    id: 'team',
-                    type: 'note',
-                    position: { x: 450, y: 250 },
-                    content: 'الفريق',
-                    title: 'الفريق'
-                }
-            ],
-            connections: [
-                { from: 'project-title', to: 'objectives' },
-                { from: 'project-title', to: 'timeline' },
-                { from: 'project-title', to: 'resources' },
-                { from: 'objectives', to: 'tasks' },
-                { from: 'timeline', to: 'tasks' },
-                { from: 'resources', to: 'team' }
-            ]
-        };
+    handleLoginSubmit(e) {
+        e.preventDefault();
+        
+        this.showToast('جاري تسجيل الدخول...');
+        
+        // Simulate login
+        setTimeout(() => {
+            this.closeModal('login');
+            this.showToast('مرحباً بك! تم تسجيل الدخول بنجاح.');
+            this.startFreeCanvas();
+        }, 2000);
     }
     
-    createStudyTemplate() {
-        return {
-            nodes: [
-                {
-                    id: 'subject',
-                    type: 'note',
-                    position: { x: 350, y: 50 },
-                    content: 'المادة الدراسية',
-                    title: 'المادة'
-                },
-                {
-                    id: 'chapter-1',
-                    type: 'note',
-                    position: { x: 150, y: 150 },
-                    content: 'الفصل الأول',
-                    title: 'فصل'
-                },
-                {
-                    id: 'chapter-2',
-                    type: 'note',
-                    position: { x: 350, y: 150 },
-                    content: 'الفصل الثاني',
-                    title: 'فصل'
-                },
-                {
-                    id: 'chapter-3',
-                    type: 'note',
-                    position: { x: 550, y: 150 },
-                    content: 'الفصل الثالث',
-                    title: 'فصل'
-                },
-                {
-                    id: 'notes-1',
-                    type: 'note',
-                    position: { x: 150, y: 250 },
-                    content: 'ملاحظات هامة',
-                    title: 'ملاحظات'
-                },
-                {
-                    id: 'examples',
-                    type: 'note',
-                    position: { x: 350, y: 250 },
-                    content: 'أمثلة وتمارين',
-                    title: 'أمثلة'
-                },
-                {
-                    id: 'summary',
-                    type: 'note',
-                    position: { x: 550, y: 250 },
-                    content: 'ملخص',
-                    title: 'ملخص'
-                }
-            ],
-            connections: [
-                { from: 'subject', to: 'chapter-1' },
-                { from: 'subject', to: 'chapter-2' },
-                { from: 'subject', to: 'chapter-3' },
-                { from: 'chapter-1', to: 'notes-1' },
-                { from: 'chapter-2', to: 'examples' },
-                { from: 'chapter-3', to: 'summary' }
-            ]
-        };
+    handleSignupSubmit(e) {
+        e.preventDefault();
+        
+        this.showToast('جاري إنشاء الحساب...');
+        
+        // Simulate signup
+        setTimeout(() => {
+            this.closeModal('signup');
+            this.showToast('تم إنشاء حسابك بنجاح! مرحباً بك في IdeaFlux.');
+            this.startFreeCanvas();
+        }, 2000);
     }
     
-    createResearchTemplate() {
-        return {
-            nodes: [
-                {
-                    id: 'research-topic',
-                    type: 'note',
-                    position: { x: 350, y: 50 },
-                    content: 'موضوع البحث',
-                    title: 'البحث'
-                },
-                {
-                    id: 'hypothesis',
-                    type: 'note',
-                    position: { x: 150, y: 150 },
-                    content: 'الفرضية',
-                    title: 'الفرضية'
-                },
-                {
-                    id: 'methodology',
-                    type: 'note',
-                    position: { x: 550, y: 150 },
-                    content: 'المنهجية',
-                    title: 'المنهج'
-                },
-                {
-                    id: 'sources',
-                    type: 'note',
-                    position: { x: 100, y: 250 },
-                    content: 'المصادر',
-                    title: 'المصادر'
-                },
-                {
-                    id: 'data',
-                    type: 'note',
-                    position: { x: 300, y: 250 },
-                    content: 'البيانات',
-                    title: 'البيانات'
-                },
-                {
-                    id: 'analysis',
-                    type: 'note',
-                    position: { x: 500, y: 250 },
-                    content: 'التحليل',
-                    title: 'التحليل'
-                },
-                {
-                    id: 'conclusions',
-                    type: 'note',
-                    position: { x: 350, y: 350 },
-                    content: 'النتائج والخلاصة',
-                    title: 'النتائج'
-                }
-            ],
-            connections: [
-                { from: 'research-topic', to: 'hypothesis' },
-                { from: 'research-topic', to: 'methodology' },
-                { from: 'hypothesis', to: 'sources' },
-                { from: 'methodology', to: 'data' },
-                { from: 'data', to: 'analysis' },
-                { from: 'sources', to: 'analysis' },
-                { from: 'analysis', to: 'conclusions' }
-            ]
+    // Public methods for global access
+    openModal(modalId) {
+        const modal = document.getElementById(`${modalId}-modal`);
+        if (modal) {
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+            
+            // Focus first input
+            const firstInput = modal.querySelector('input');
+            if (firstInput) {
+                setTimeout(() => firstInput.focus(), 100);
+            }
+        }
+    }
+    
+    closeModal(modalId) {
+        const modal = document.getElementById(`${modalId}-modal`);
+        if (modal) {
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+    }
+    
+    closeAllModals() {
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.style.display = 'none';
+        });
+        document.body.style.overflow = 'auto';
+    }
+    
+    switchModal(fromModalId, toModalId) {
+        this.closeModal(fromModalId);
+        setTimeout(() => this.openModal(toModalId), 100);
+    }
+    
+    startFreeCanvas() {
+        this.showToast('جاري تحميل قماش IdeaFlux...');
+        
+        // Simulate canvas loading
+        setTimeout(() => {
+            this.showToast('مرحباً بك في IdeaFlux! ابدأ بإضافة أفكارك.');
+            
+            // In a real app, this would redirect to the canvas application
+            // For demo purposes, we'll just show a success message
+            setTimeout(() => {
+                this.showToast('استخدم الأدوات في الأعلى لإضافة عناصر جديدة!');
+            }, 2000);
+        }, 1500);
+    }
+    
+    showDemo() {
+        this.openModal('demo');
+    }
+    
+    startInteractiveDemo() {
+        this.closeModal('demo');
+        
+        // Scroll to demo section
+        const demoSection = document.getElementById('demo');
+        if (demoSection) {
+            demoSection.scrollIntoView({ behavior: 'smooth' });
+            
+            // Highlight demo after scroll
+            setTimeout(() => {
+                demoSection.style.background = 'rgba(99, 102, 241, 0.1)';
+                this.showToast('جرب الأدوات أدناه لاستكشاف IdeaFlux!');
+                
+                setTimeout(() => {
+                    demoSection.style.background = '';
+                }, 3000);
+            }, 1000);
+        }
+    }
+    
+    saveCanvas() {
+        this.showToast('تم حفظ عملك تلقائياً ✓');
+    }
+    
+    showToast(message, type = 'info') {
+        // Remove existing toasts
+        document.querySelectorAll('.toast').forEach(toast => toast.remove());
+        
+        const toast = document.createElement('div');
+        toast.className = `toast toast-${type}`;
+        toast.style.cssText = `
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            z-index: 2001;
+            max-width: 300px;
+            font-weight: 500;
+            animation: slideInRight 0.3s ease-out;
+        `;
+        
+        if (type === 'success') {
+            toast.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+        } else if (type === 'error') {
+            toast.style.background = 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)';
+        } else if (type === 'warning') {
+            toast.style.background = 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)';
+        }
+        
+        toast.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <i class="fas fa-${this.getToastIcon(type)}"></i>
+                <span>${message}</span>
+            </div>
+        `;
+        
+        document.body.appendChild(toast);
+        
+        // Auto remove after 3 seconds
+        setTimeout(() => {
+            if (toast.parentNode) {
+                toast.style.animation = 'slideOutRight 0.3s ease-in';
+                setTimeout(() => toast.remove(), 300);
+            }
+        }, 3000);
+        
+        // Click to dismiss
+        toast.addEventListener('click', () => {
+            toast.style.animation = 'slideOutRight 0.3s ease-in';
+            setTimeout(() => toast.remove(), 300);
+        });
+    }
+    
+    getToastIcon(type) {
+        const icons = {
+            info: 'info-circle',
+            success: 'check-circle',
+            error: 'exclamation-circle',
+            warning: 'exclamation-triangle'
         };
+        return icons[type] || 'info-circle';
     }
 }
 
-// Global Functions
-function startCanvas() {
-    // Redirect to full canvas application
-    alert('🚀 مرحباً بك في ThinkCanvas!\n\nهذا عرض توضيحي للواجهة الرئيسية.\nفي التطبيق الكامل، ستنتقل إلى واجهة اللوحة الشاملة مع جميع الأدوات المتقدمة.');
-    
-    // In real app, this would navigate to the full canvas interface
-    // window.location.href = '/canvas';
+// Initialize the application
+const ideaFlux = new IdeaFlux();
+
+// Global functions for HTML onclick handlers
+function openModal(modalId) {
+    ideaFlux.openModal(modalId);
+}
+
+function closeModal(modalId) {
+    ideaFlux.closeModal(modalId);
+}
+
+function switchModal(fromModalId, toModalId) {
+    ideaFlux.switchModal(fromModalId, toModalId);
+}
+
+function startFreeCanvas() {
+    ideaFlux.startFreeCanvas();
 }
 
 function showDemo() {
-    // Scroll to interactive demo
-    const demoSection = document.querySelector('.interactive-demo');
-    if (demoSection) {
-        demoSection.scrollIntoView({ behavior: 'smooth' });
-    }
-    
-    // Highlight the demo area
-    const demoCanvas = document.getElementById('demoCanvas');
-    if (demoCanvas) {
-        demoCanvas.style.border = '3px solid #4f46e5';
-        demoCanvas.style.boxShadow = '0 0 20px rgba(79, 70, 229, 0.3)';
-        
-        setTimeout(() => {
-            demoCanvas.style.border = '1px solid var(--border)';
-            demoCanvas.style.boxShadow = 'var(--shadow-lg)';
-        }, 3000);
-    }
+    ideaFlux.showDemo();
 }
 
-function learnMore() {
-    // Show more information modal or scroll to features
-    const featuresSection = document.getElementById('features');
-    if (featuresSection) {
-        featuresSection.scrollIntoView({ behavior: 'smooth' });
-    }
+function startInteractiveDemo() {
+    ideaFlux.startInteractiveDemo();
 }
 
-// Initialize ThinkCanvas when DOM is loaded
-let thinkCanvas;
-
-document.addEventListener('DOMContentLoaded', () => {
-    thinkCanvas = new ThinkCanvas();
-    
-    // Add some demo animations
-    setTimeout(() => {
-        document.querySelectorAll('.feature-card').forEach((card, index) => {
-            setTimeout(() => {
-                card.classList.add('slide-up');
-            }, index * 100);
-        });
-    }, 500);
-});
-
-// Add CSS for animations
+// Add CSS animations for toasts
 const style = document.createElement('style');
 style.textContent = `
-    .scale-out {
-        animation: scaleOut 0.3s ease-in-out forwards;
-    }
-    
-    @keyframes scaleOut {
-        from { opacity: 1; transform: scale(1); }
-        to { opacity: 0; transform: scale(0.8); }
-    }
-    
-    .dragging {
-        transform: rotate(2deg);
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-        cursor: grabbing !important;
-    }
-    
-    .node-delete {
-        position: absolute;
-        top: 8px;
-        right: 8px;
-        background: #ef4444;
-        color: white;
-        border: none;
-        border-radius: 50%;
-        width: 24px;
-        height: 24px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 12px;
-        opacity: 0;
-        transition: opacity 0.2s;
-    }
-    
-    .canvas-node:hover .node-delete {
-        opacity: 1;
-    }
-    
-    .node-delete:hover {
-        background: #dc2626;
-        transform: scale(1.1);
-    }
-    
-    .ai-interface {
-        display: flex;
-        gap: 8px;
-        margin-bottom: 12px;
-    }
-    
-    .ai-interface input {
-        flex: 1;
-        padding: 8px;
-        border: 1px solid var(--border);
-        border-radius: 6px;
-        font-family: var(--font-primary);
-    }
-    
-    .ai-interface button {
-        background: var(--primary-color);
-        color: white;
-        border: none;
-        border-radius: 6px;
-        padding: 8px 12px;
-        cursor: pointer;
-    }
-    
-    .ai-response {
-        background: var(--surface);
-        padding: 12px;
-        border-radius: 6px;
-        font-size: 14px;
-        line-height: 1.5;
-        white-space: pre-line;
-    }
-    
-    .image-upload {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 8px;
-        padding: 20px;
-        border: 2px dashed var(--border);
-        border-radius: 6px;
-        cursor: pointer;
-        transition: all 0.2s;
-    }
-    
-    .image-upload:hover {
-        border-color: var(--primary-color);
-        background: var(--surface);
-    }
-    
-    .image-upload i {
-        font-size: 24px;
-        color: var(--text-secondary);
-    }
-    
-    .tool-select .canvas-area {
-        cursor: default;
-    }
-    
-    .tool-note .canvas-area {
-        cursor: crosshair;
-    }
-    
-    .tool-image .canvas-area {
-        cursor: copy;
-    }
-    
-    .tool-connect .canvas-area {
-        cursor: pointer;
-    }
-    
-    .tool-ai .canvas-area {
-        cursor: help;
-    }
-    
-    @media (max-width: 768px) {
-        .nav-menu.active,
-        .nav-actions.active {
-            display: flex;
-            position: absolute;
-            top: 100%;
-            left: 0;
-            width: 100%;
-            background: white;
-            flex-direction: column;
-            padding: 20px;
-            box-shadow: var(--shadow-lg);
-            gap: 16px;
-        }
-        
-        .hamburger.active span:nth-child(1) {
-            transform: rotate(45deg) translate(6px, 6px);
-        }
-        
-        .hamburger.active span:nth-child(2) {
+    @keyframes slideInRight {
+        from {
+            transform: translateX(100%);
             opacity: 0;
         }
-        
-        .hamburger.active span:nth-child(3) {
-            transform: rotate(-45deg) translate(6px, -6px);
+        to {
+            transform: translateX(0);
+            opacity: 1;
         }
     }
+    
+    @keyframes slideOutRight {
+        from {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        to {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+    }
+    
+    .toast:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.3) !important;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
 `;
-
 document.head.appendChild(style);
+
+// Easter eggs and advanced features
+document.addEventListener('keydown', (e) => {
+    // Konami code easter egg
+    const konamiCode = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65]; // ↑↑↓↓←→←→BA
+    if (!window.konamiSequence) window.konamiSequence = [];
+    
+    window.konamiSequence.push(e.keyCode);
+    if (window.konamiSequence.length > konamiCode.length) {
+        window.konamiSequence.shift();
+    }
+    
+    if (window.konamiSequence.join(',') === konamiCode.join(',')) {
+        ideaFlux.showToast('🎉 تم تفعيل الوضع السري! جميع الميزات المتقدمة متاحة الآن.', 'success');
+        document.body.style.filter = 'hue-rotate(180deg)';
+        setTimeout(() => {
+            document.body.style.filter = '';
+        }, 5000);
+        window.konamiSequence = [];
+    }
+});
+
+// Performance monitoring
+if ('performance' in window) {
+    window.addEventListener('load', () => {
+        const loadTime = performance.timing.loadEventEnd - performance.timing.navigationStart;
+        console.log(`⚡ IdeaFlux loaded in ${loadTime}ms`);
+        
+        if (loadTime > 3000) {
+            console.warn('⚠️ Slow loading detected. Consider optimizing resources.');
+        }
+    });
+}
+
+// Service Worker registration for PWA capabilities
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+            .then(registration => {
+                console.log('✅ Service Worker registered:', registration);
+            })
+            .catch(error => {
+                console.log('❌ Service Worker registration failed:', error);
+            });
+    });
+}
+
+console.log('🧠 IdeaFlux initialized successfully!');
