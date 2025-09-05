@@ -17,7 +17,7 @@
   },
   "keywords": [
     "visual-thinking",
-    "mind-mapping", 
+    "mind-mapping",
     "brainstorming",
     "canvas",
     "arabic",
@@ -63,9 +63,15 @@
     "url": "https://opencollective.com/ideaflux"
   },
   "devDependencies": {
-    "live-server": "^1.2.2",
+    "@netlify/plugin-nextjs": "^5.13.0",
+    "@netlify/plugin-sitemap": "^0.8.1",
+    "html-validate": "^8.7.4",
     "lighthouse": "^11.4.0",
-    "html-validate": "^8.7.4"
+    "live-server": "^1.2.2",
+    "netlify-plugin-a11y": "^0.0.12",
+    "netlify-plugin-image-optim": "^0.4.0",
+    "netlify-plugin-lighthouse": "^0.1.3",
+    "netlify-plugin-minify-html": "^0.3.1"
   },
   "browserslist": [
     "> 1%",
@@ -108,8 +114,14 @@
       {
         "path": "/*.html",
         "timings": [
-          { "metric": "fcp", "budget": 2000 },
-          { "metric": "lcp", "budget": 2500 }
+          {
+            "metric": "fcp",
+            "budget": 2000
+          },
+          {
+            "metric": "lcp",
+            "budget": 2500
+          }
         ]
       }
     ]
