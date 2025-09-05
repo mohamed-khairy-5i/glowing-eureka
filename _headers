@@ -1,0 +1,85 @@
+# IdeaFlux Global Headers - 2025 Enhanced Security & Performance
+
+/*
+  # Enhanced Security Headers (2025 Standards)
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Cross-Origin-Embedder-Policy: require-corp
+  Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Resource-Policy: same-origin
+  
+  # Content Security Policy 2025
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com https://fonts.googleapis.com https://generativelanguage.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https: blob:; connect-src 'self' https://generativelanguage.googleapis.com https://api.dicebear.com; media-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests
+  
+  # Enhanced Permissions Policy
+  Permissions-Policy: accelerometer=(), ambient-light-sensor=(), autoplay=(), battery=(), camera=(), cross-origin-isolated=(), display-capture=(), document-domain=(), encrypted-media=(), execution-while-not-rendered=(), execution-while-out-of-viewport=(), fullscreen=(self), geolocation=(), gyroscope=(), keyboard-map=(), magnetometer=(), microphone=(), midi=(), navigation-override=(), payment=(), picture-in-picture=(self), publickey-credentials-get=(), screen-wake-lock=(), sync-xhr=(), usb=(), web-share=(self), xr-spatial-tracking=(), clipboard-read=(self), clipboard-write=(self), gamepad=(), speaker-selection=(), conversion-measurement=(), focus-without-user-activation=(), hid=(), idle-detection=(), interest-cohort=(), serial=(), sync-script=(), trust-token-redemption=(), window-management=(), local-fonts=()
+  
+  # Performance & Caching
+  Cache-Control: public, max-age=31536000, immutable
+  
+  # Modern Browser Features
+  Accept-CH: DPR, Viewport-Width, Width, Save-Data, Sec-CH-UA, Sec-CH-UA-Mobile, Sec-CH-UA-Platform
+  Critical-CH: Save-Data, Sec-CH-UA-Mobile
+  
+  # Privacy & Analytics
+  Tk: N
+  DNT: 1
+
+# HTML Files - Dynamic Content
+/*.html
+  Cache-Control: public, max-age=0, must-revalidate, no-cache
+  ETag: W/"html-file"
+  Vary: Accept-Encoding, Accept-CH
+
+# CSS Files
+/*.css
+  Cache-Control: public, max-age=31536000, immutable
+  Content-Type: text/css; charset=utf-8
+  Vary: Accept-Encoding
+
+# JavaScript Files
+/*.js
+  Cache-Control: public, max-age=31536000, immutable
+  Content-Type: application/javascript; charset=utf-8
+  Vary: Accept-Encoding
+
+# Web Fonts
+/*.woff2
+  Cache-Control: public, max-age=31536000, immutable
+  Content-Type: font/woff2
+  Cross-Origin-Resource-Policy: cross-origin
+
+/*.woff
+  Cache-Control: public, max-age=31536000, immutable
+  Content-Type: font/woff
+
+# Images
+/*.svg
+  Cache-Control: public, max-age=31536000, immutable
+  Content-Type: image/svg+xml
+
+/*.webp
+  Cache-Control: public, max-age=31536000, immutable
+  Content-Type: image/webp
+
+/*.avif
+  Cache-Control: public, max-age=31536000, immutable
+  Content-Type: image/avif
+
+# PWA Files
+/manifest.json
+  Content-Type: application/manifest+json
+  Cache-Control: public, max-age=86400
+
+/sw.js
+  Content-Type: application/javascript
+  Cache-Control: public, max-age=0, must-revalidate
+
+# API Routes
+/api/*
+  Content-Type: application/json
+  Cache-Control: no-store, no-cache, must-revalidate
+  Access-Control-Allow-Origin: *
+  Access-Control-Allow-Methods: GET, POST, OPTIONS
+  Access-Control-Allow-Headers: Content-Type, Authorization

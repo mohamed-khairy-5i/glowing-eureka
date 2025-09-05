@@ -1,0 +1,75 @@
+# IdeaFlux Redirects Configuration - 2025 Edition
+
+# Canvas workspace aliases
+/canvas /canvas.html 200
+/workspace /canvas.html 200
+/app /canvas.html 200
+/editor /canvas.html 200
+/board /canvas.html 200
+/design /canvas.html 200
+/create /canvas.html 200
+
+# Legacy competitor redirects (SEO capture)
+/scrintal/* /canvas.html 301
+/miro/* /canvas.html 301
+/mural/* /canvas.html 301
+/figma/* /canvas.html 301
+/lucidchart/* /canvas.html 301
+/mindmeister/* /canvas.html 301
+/xmind/* /canvas.html 301
+
+# Feature-specific redirects
+/ai /canvas.html#ai 200
+/templates /#templates 200
+/pricing /#pricing 200
+/features /#features 200
+/contact /#contact 200
+/demo /#demo 200
+
+# Language redirects
+/en/* / 302
+/english/* / 302
+
+# Mobile app redirects
+/mobile /canvas.html 200
+/ios /canvas.html 200
+/android /canvas.html 200
+
+# API redirects (future)
+/api/v1/* /.netlify/functions/:splat 200
+/api/* /.netlify/functions/:splat 200
+
+# Auth redirects (future)
+/login /canvas.html 200
+/signup /canvas.html 200
+/register /canvas.html 200
+/auth/* /canvas.html 200
+
+# Help and support
+/help /#contact 200
+/support /#contact 200
+/docs /#features 200
+/guide /#features 200
+/tutorial /#demo 200
+
+# Social media and sharing
+/share/* /canvas.html 200
+/invite/* /canvas.html 200
+
+# Error pages
+/404 /index.html 404
+/error /index.html 200
+
+# Old paths cleanup
+/old/* / 301
+/legacy/* / 301
+/v1/* / 301
+
+# Force HTTPS (handled by Netlify but explicit)
+http://ideaflux.netlify.app/* https://ideaflux.netlify.app/:splat 301!
+
+# Temporary maintenance redirect (commented out)
+# /* /maintenance.html 503
+
+# SPA Fallback - MUST BE LAST
+/* /index.html 200

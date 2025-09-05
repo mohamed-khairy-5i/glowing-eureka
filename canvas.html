@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IdeaFlux - مساحة العمل</title>
+    <meta name="description" content="مساحة العمل التفاعلية للتفكير البصري وتنظيم الأفكار مع ذكاء اصطناعي متقدم">
+    <meta name="keywords" content="قماش تفاعلي, تفكير بصري, ذكاء اصطناعي, تعاون فوري, خرائط ذهنية">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#4f46e5">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="IdeaFlux Canvas">
+    
+    <!-- Icons -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" href="/assets/icon-180x180.png">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="IdeaFlux Canvas - مساحة العمل التفاعلية">
+    <meta property="og:description" content="قماش لانهائي للتفكير البصري مع أدوات متقدمة وذكاء اصطناعي">
+    <meta property="og:image" content="https://ideaflux.netlify.app/assets/canvas-preview.png">
+    <meta property="og:url" content="https://ideaflux.netlify.app/canvas.html">
+    
+    <!-- Preconnect for performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="preconnect" href="https://generativelanguage.googleapis.com">
+    <link rel="preconnect" href="https://api.dicebear.com">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="canvas-styles.css">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-content">
+            <div class="loading-logo">
+                <i class="fas fa-brain"></i>
+                <h2>IdeaFlux</h2>
+            </div>
+            <div class="loading-progress">
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+                <p class="loading-text">جاري تحميل مساحة العمل...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Application -->
+    <div id="app" class="app hidden">
+        <!-- Top Navigation -->
+        <nav class="top-nav">
+            <div class="nav-left">
+                <div class="logo">
+                    <i class="fas fa-brain"></i>
+                    <span>IdeaFlux</span>
+                </div>
+                <div class="project-info">
+                    <input type="text" id="project-title" value="مشروع جديد" class="project-title-input">
+                    <span class="last-saved" id="last-saved">تم الحفظ منذ ثانية واحدة</span>
+                </div>
+            </div>
+            
+            <div class="nav-center">
+                <div class="view-controls">
+                    <button class="view-btn active" data-view="canvas" title="عرض القماش">
+                        <i class="fas fa-project-diagram"></i>
+                    </button>
+                    <button class="view-btn" data-view="outline" title="عرض الخطوط">
+                        <i class="fas fa-list"></i>
+                    </button>
+                    <button class="view-btn" data-view="timeline" title="عرض الخط الزمني">
+                        <i class="fas fa-timeline"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="nav-right">
+                <div class="zoom-controls">
+                    <button class="zoom-btn" id="zoom-out" title="تصغير">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                    <span class="zoom-level" id="zoom-level">100%</span>
+                    <button class="zoom-btn" id="zoom-in" title="تكبير">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                    <button class="zoom-btn" id="fit-to-screen" title="ملء الشاشة">
+                        <i class="fas fa-expand"></i>
+                    </button>
+                </div>
+                
+                <div class="collaboration">
+                    <div class="collaborators" id="collaborators">
+                        <div class="collaborator" data-user="me">
+                            <div class="avatar">أ</div>
+                        </div>
+                    </div>
+                    <button class="share-btn" id="share-btn" title="مشاركة">
+                        <i class="fas fa-share-alt"></i>
+                        <span>مشاركة</span>
+                    </button>
+                </div>
+                
+                <div class="user-menu">
+                    <button class="user-avatar" id="user-menu-btn">
+                        <img src="https://api.dicebear.com/7.x/initials/svg?seed=أحمد" alt="المستخدم">
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h3>الأدوات</h3>
+                <button class="sidebar-toggle" id="sidebar-toggle">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+            </div>
+            
+            <div class="sidebar-content">
+                <!-- Tool Palette -->
+                <div class="tool-section">
+                    <h4>أدوات الإنشاء</h4>
+                    <div class="tool-grid">
+                        <button class="tool-btn active" data-tool="select" title="اختيار وتحريك">
+                            <i class="fas fa-mouse-pointer"></i>
+                            <span>اختيار</span>
+                        </button>
+                        <button class="tool-btn" data-tool="note" title="ملاحظة نصية">
+                            <i class="fas fa-sticky-note"></i>
+                            <span>ملاحظة</span>
+                        </button>
+                        <button class="tool-btn" data-tool="idea" title="فكرة رئيسية">
+                            <i class="fas fa-lightbulb"></i>
+                            <span>فكرة</span>
+                        </button>
+                        <button class="tool-btn" data-tool="image" title="إضافة صورة">
+                            <i class="fas fa-image"></i>
+                            <span>صورة</span>
+                        </button>
+                        <button class="tool-btn" data-tool="document" title="مستند">
+                            <i class="fas fa-file-alt"></i>
+                            <span>مستند</span>
+                        </button>
+                        <button class="tool-btn" data-tool="link" title="رابط">
+                            <i class="fas fa-link"></i>
+                            <span>رابط</span>
+                        </button>
+                        <button class="tool-btn" data-tool="arrow" title="سهم للربط">
+                            <i class="fas fa-arrow-right"></i>
+                            <span>سهم</span>
+                        </button>
+                        <button class="tool-btn" data-tool="shape" title="أشكال">
+                            <i class="fas fa-shapes"></i>
+                            <span>شكل</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- AI Assistant -->
+                <div class="tool-section">
+                    <h4>المساعد الذكي</h4>
+                    <div class="ai-section">
+                        <button class="ai-btn" id="ai-suggestions" title="اقتراحات ذكية">
+                            <i class="fas fa-magic"></i>
+                            <span>اقتراحات</span>
+                        </button>
+                        <button class="ai-btn" id="ai-organize" title="تنظيم تلقائي">
+                            <i class="fas fa-sort-amount-up"></i>
+                            <span>تنظيم</span>
+                        </button>
+                        <button class="ai-btn" id="ai-summarize" title="تلخيص المحتوى">
+                            <i class="fas fa-compress-alt"></i>
+                            <span>تلخيص</span>
+                        </button>
+                        <button class="ai-btn" id="ai-generate" title="توليد أفكار">
+                            <i class="fas fa-brain"></i>
+                            <span>توليد</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Templates -->
+                <div class="tool-section">
+                    <h4>القوالب السريعة</h4>
+                    <div class="templates-list">
+                        <button class="template-btn" data-template="research">
+                            <i class="fas fa-microscope"></i>
+                            <span>بحث علمي</span>
+                        </button>
+                        <button class="template-btn" data-template="brainstorm">
+                            <i class="fas fa-brain"></i>
+                            <span>عصف ذهني</span>
+                        </button>
+                        <button class="template-btn" data-template="project">
+                            <i class="fas fa-project-diagram"></i>
+                            <span>إدارة مشروع</span>
+                        </button>
+                        <button class="template-btn" data-template="mind-map">
+                            <i class="fas fa-sitemap"></i>
+                            <span>خريطة ذهنية</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Layers -->
+                <div class="tool-section">
+                    <h4>الطبقات</h4>
+                    <div class="layers-list" id="layers-list">
+                        <div class="layer-item active">
+                            <i class="fas fa-eye"></i>
+                            <span>الطبقة الأساسية</span>
+                            <button class="layer-menu"><i class="fas fa-ellipsis-v"></i></button>
+                        </div>
+                    </div>
+                    <button class="add-layer-btn" id="add-layer">
+                        <i class="fas fa-plus"></i>
+                        <span>إضافة طبقة</span>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Canvas Area -->
+        <main class="main-content">
+            <div class="canvas-container" id="canvas-container">
+                <!-- Canvas Background -->
+                <div class="canvas-background" id="canvas-background">
+                    <svg class="grid-pattern" width="100%" height="100%">
+                        <defs>
+                            <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+                                <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#e5e7eb" stroke-width="0.5"/>
+                            </pattern>
+                        </defs>
+                        <rect width="100%" height="100%" fill="url(#grid)" />
+                    </svg>
+                </div>
+                
+                <!-- Canvas Elements -->
+                <div class="canvas-elements" id="canvas-elements">
+                    <!-- Elements will be dynamically added here -->
+                </div>
+                
+                <!-- Connections Layer -->
+                <svg class="connections-layer" id="connections-layer" width="100%" height="100%">
+                    <defs>
+                        <marker id="arrowhead" markerWidth="10" markerHeight="7" 
+                                refX="9" refY="3.5" orient="auto">
+                            <polygon points="0 0, 10 3.5, 0 7" fill="#4f46e5" />
+                        </marker>
+                    </defs>
+                </svg>
+                
+                <!-- Selection Box -->
+                <div class="selection-box" id="selection-box"></div>
+                
+                <!-- Context Menu -->
+                <div class="context-menu" id="context-menu">
+                    <div class="context-menu-item" data-action="edit">
+                        <i class="fas fa-edit"></i>
+                        <span>تحرير</span>
+                    </div>
+                    <div class="context-menu-item" data-action="duplicate">
+                        <i class="fas fa-copy"></i>
+                        <span>نسخ</span>
+                    </div>
+                    <div class="context-menu-item" data-action="delete">
+                        <i class="fas fa-trash"></i>
+                        <span>حذف</span>
+                    </div>
+                    <div class="context-menu-divider"></div>
+                    <div class="context-menu-item" data-action="bring-front">
+                        <i class="fas fa-arrow-up"></i>
+                        <span>إحضار للأمام</span>
+                    </div>
+                    <div class="context-menu-item" data-action="send-back">
+                        <i class="fas fa-arrow-down"></i>
+                        <span>إرسال للخلف</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Floating Action Button -->
+            <div class="fab" id="fab">
+                <button class="fab-main" id="fab-main">
+                    <i class="fas fa-plus"></i>
+                </button>
+                <div class="fab-menu" id="fab-menu">
+                    <button class="fab-item" data-tool="note">
+                        <i class="fas fa-sticky-note"></i>
+                        <span>ملاحظة</span>
+                    </button>
+                    <button class="fab-item" data-tool="idea">
+                        <i class="fas fa-lightbulb"></i>
+                        <span>فكرة</span>
+                    </button>
+                    <button class="fab-item" data-tool="image">
+                        <i class="fas fa-image"></i>
+                        <span>صورة</span>
+                    </button>
+                    <button class="fab-item" data-tool="ai">
+                        <i class="fas fa-magic"></i>
+                        <span>مساعد ذكي</span>
+                    </button>
+                </div>
+            </div>
+        </main>
+
+        <!-- Properties Panel -->
+        <aside class="properties-panel" id="properties-panel">
+            <div class="panel-header">
+                <h3>خصائص العنصر</h3>
+                <button class="panel-close" id="close-properties">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="panel-content" id="properties-content">
+                <div class="no-selection">
+                    <i class="fas fa-mouse-pointer"></i>
+                    <p>اختر عنصراً لعرض خصائصه</p>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Modals -->
+    
+    <!-- Share Modal -->
+    <div id="share-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>مشاركة المشروع</h3>
+                <button class="close-modal"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="share-section">
+                    <h4>دعوة المتعاونين</h4>
+                    <div class="invite-input">
+                        <input type="email" placeholder="أدخل البريد الإلكتروني">
+                        <select class="permission-select">
+                            <option value="edit">يمكن التحرير</option>
+                            <option value="comment">يمكن التعليق</option>
+                            <option value="view">يمكن العرض فقط</option>
+                        </select>
+                        <button class="invite-btn">دعوة</button>
+                    </div>
+                </div>
+                
+                <div class="share-section">
+                    <h4>رابط المشاركة</h4>
+                    <div class="share-link">
+                        <input type="text" value="https://ideaflux.com/canvas/abc123" readonly>
+                        <button class="copy-link-btn">نسخ</button>
+                    </div>
+                    <div class="link-permissions">
+                        <label>
+                            <input type="radio" name="link-permission" value="private" checked>
+                            <span>خاص - يحتاج دعوة</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="link-permission" value="public">
+                            <span>عام - يمكن لأي شخص العرض</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Assistant Modal -->
+    <div id="ai-modal" class="modal">
+        <div class="modal-content ai-modal-content">
+            <div class="modal-header">
+                <h3>المساعد الذكي</h3>
+                <button class="close-modal"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="ai-chat" id="ai-chat">
+                    <div class="ai-message">
+                        <i class="fas fa-robot"></i>
+                        <div class="message-content">
+                            <p>مرحباً! أنا المساعد الذكي لـ IdeaFlux. كيف يمكنني مساعدتك اليوم؟</p>
+                            <div class="ai-suggestions">
+                                <button class="suggestion-btn">نظم الأفكار الموجودة</button>
+                                <button class="suggestion-btn">اقترح روابط جديدة</button>
+                                <button class="suggestion-btn">لخص المحتوى</button>
+                                <button class="suggestion-btn">أضف مراجع علمية</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="ai-input">
+                    <input type="text" id="ai-input-field" placeholder="اكتب سؤالك أو طلبك...">
+                    <button id="ai-send-btn">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Scripts -->
+    <script src="canvas-script.js"></script>
+</body>
+</html>

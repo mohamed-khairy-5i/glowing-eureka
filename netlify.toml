@@ -1,97 +1,333 @@
-# Netlify Configuration for IdeaFlux
+# Netlify Configuration for IdeaFlux - 2025 Enhanced Edition
 
 [build]
-  # Build settings
   publish = "."
-  command = "echo 'Static site - no build required'"
+  command = "echo 'IdeaFlux - Advanced Visual Thinking Platform'"
+  environment = { NODE_VERSION = "20", NPM_VERSION = "10" }
 
-# Redirect rules
-[[redirects]]
-  # SPA fallback for client-side routing
-  from = "/*"
-  to = "/index.html"
-  status = 200
-  conditions = {Role = ["admin"], Country = ["US"]}
-
-# Headers for security and performance
+# 2025 Advanced Security Headers
 [[headers]]
   for = "/*"
   [headers.values]
-    # Security headers
+    # Enhanced Security Headers (2025 Standards)
     X-Frame-Options = "DENY"
-    X-XSS-Protection = "1; mode=block"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
-    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+    Cross-Origin-Embedder-Policy = "require-corp"
+    Cross-Origin-Opener-Policy = "same-origin"
+    Cross-Origin-Resource-Policy = "same-origin"
     
-    # Performance headers
+    # 2025 Enhanced Permissions Policy
+    Permissions-Policy = """
+      accelerometer=(),
+      ambient-light-sensor=(),
+      autoplay=(),
+      battery=(),
+      camera=(),
+      cross-origin-isolated=(),
+      display-capture=(),
+      document-domain=(),
+      encrypted-media=(),
+      execution-while-not-rendered=(),
+      execution-while-out-of-viewport=(),
+      fullscreen=(self),
+      geolocation=(),
+      gyroscope=(),
+      keyboard-map=(),
+      magnetometer=(),
+      microphone=(),
+      midi=(),
+      navigation-override=(),
+      payment=(),
+      picture-in-picture=(self),
+      publickey-credentials-get=(),
+      screen-wake-lock=(),
+      sync-xhr=(),
+      usb=(),
+      web-share=(self),
+      xr-spatial-tracking=(),
+      clipboard-read=(self),
+      clipboard-write=(self),
+      gamepad=(),
+      speaker-selection=(),
+      conversion-measurement=(),
+      focus-without-user-activation=(),
+      hid=(),
+      idle-detection=(),
+      interest-cohort=(),
+      serial=(),
+      sync-script=(),
+      trust-token-redemption=(),
+      window-management=(),
+      local-fonts=()
+    """
+    
+    # Content Security Policy 2025
+    Content-Security-Policy = """
+      default-src 'self';
+      script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com https://fonts.googleapis.com https://generativelanguage.googleapis.com;
+      style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com;
+      font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com;
+      img-src 'self' data: https: blob:;
+      connect-src 'self' https://generativelanguage.googleapis.com https://api.dicebear.com;
+      media-src 'self' blob:;
+      object-src 'none';
+      base-uri 'self';
+      form-action 'self';
+      frame-ancestors 'none';
+      upgrade-insecure-requests
+    """
+    
+    # Performance & Caching
     Cache-Control = "public, max-age=31536000, immutable"
+    
+    # Modern Browser Features
+    Accept-CH = "DPR, Viewport-Width, Width, Save-Data, Sec-CH-UA, Sec-CH-UA-Mobile, Sec-CH-UA-Platform"
+    Critical-CH = "Save-Data, Sec-CH-UA-Mobile"
+    
+    # Privacy & Analytics
+    Tk = "N"
+    DNT = "1"
 
+# HTML Files - Dynamic Content
 [[headers]]
   for = "*.html"
   [headers.values]
-    Cache-Control = "public, max-age=0, must-revalidate"
+    Cache-Control = "public, max-age=0, must-revalidate, no-cache"
+    ETag = "W/\"html-file\""
+    Vary = "Accept-Encoding, Accept-CH"
 
+# CSS Files - Long Cache with Fingerprinting
 [[headers]]
   for = "*.css"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
     Content-Type = "text/css; charset=utf-8"
+    Vary = "Accept-Encoding"
 
+# JavaScript Files - Long Cache
 [[headers]]
   for = "*.js"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
     Content-Type = "application/javascript; charset=utf-8"
+    Vary = "Accept-Encoding"
 
+# Web Fonts - Optimized Caching
 [[headers]]
   for = "*.woff2"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
     Content-Type = "font/woff2"
+    Cross-Origin-Resource-Policy = "cross-origin"
 
-# Environment variables
-[context.production.environment]
-  NODE_ENV = "production"
+[[headers]]
+  for = "*.woff"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+    Content-Type = "font/woff"
 
-# Form handling
-[forms]
-  [forms.contact]
-    name = "contact-form"
-    
-# Functions (for future API endpoints)
-[functions]
-  directory = "netlify/functions"
+# Image Optimization
+[[headers]]
+  for = "*.svg"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+    Content-Type = "image/svg+xml"
 
-# Edge functions
-[[edge_functions]]
-  function = "geolocation"
-  path = "/*"
+[[headers]]
+  for = "*.webp"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+    Content-Type = "image/webp"
 
-# Branch deploys
-[context.branch-deploy]
-  command = "echo 'Branch deploy'"
+[[headers]]
+  for = "*.avif"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+    Content-Type = "image/avif"
 
-[context.deploy-preview]
-  command = "echo 'Deploy preview'"
-
-# Plugin configuration
-[[plugins]]
-  package = "@netlify/plugin-sitemap"
-
-[[plugins]]
-  package = "netlify-plugin-minify-html"
-  [plugins.inputs]
-    contexts = ["production"]
-
-# PWA settings
+# PWA Manifest
 [[headers]]
   for = "/manifest.json"
   [headers.values]
     Content-Type = "application/manifest+json"
-    Cache-Control = "public, max-age=31536000"
+    Cache-Control = "public, max-age=86400"
 
-# API rate limiting
+# Service Worker
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Content-Type = "application/javascript"
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# API Endpoints (Future)
+[[headers]]
+  for = "/api/*"
+  [headers.values]
+    Content-Type = "application/json"
+    Cache-Control = "no-store, no-cache, must-revalidate"
+    Access-Control-Allow-Origin = "*"
+    Access-Control-Allow-Methods = "GET, POST, OPTIONS"
+    Access-Control-Allow-Headers = "Content-Type, Authorization"
+
+# 2025 Enhanced Redirects & Routing
+[[redirects]]
+  from = "/canvas"
+  to = "/canvas.html"
+  status = 200
+
+[[redirects]]
+  from = "/workspace"
+  to = "/canvas.html"
+  status = 200
+
+[[redirects]]
+  from = "/app"
+  to = "/canvas.html"
+  status = 200
+
+[[redirects]]
+  from = "/editor"
+  to = "/canvas.html"
+  status = 200
+
+# Legacy redirects
+[[redirects]]
+  from = "/scrintal/*"
+  to = "/canvas.html"
+  status = 301
+
+[[redirects]]
+  from = "/miro/*"
+  to = "/canvas.html"
+  status = 301
+
+# SPA Fallback (Must be last)
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Form Handling with Spam Protection
+[forms]
+  [forms.contact]
+    name = "contact-form"
+    spam_protection = "true"
+
+[forms.feedback]
+  name = "feedback-form"
+  spam_protection = "true"
+
+# Environment Variables for Different Contexts
+[context.production.environment]
+  NODE_ENV = "production"
+  GOOGLE_AI_API = "AIzaSyByEXNDlu9kNaxJWxm7mxxe5vmAqe98DpE"
+  APP_VERSION = "2.0.0"
+  BUILD_DATE = "2025-09-05"
+
+[context.deploy-preview.environment]
+  NODE_ENV = "staging"
+  APP_VERSION = "preview"
+
+[context.branch-deploy.environment]
+  NODE_ENV = "development"
+  APP_VERSION = "dev"
+
+# Edge Functions for Enhanced Performance (2025)
 [[edge_functions]]
-  function = "rate-limit"
-  path = "/api/*"
+  function = "analytics"
+  path = "/*"
+  cache = "manual"
+
+[[edge_functions]]
+  function = "security-headers"
+  path = "/*"
+  cache = "manual"
+
+[[edge_functions]]
+  function = "ai-proxy"
+  path = "/api/ai/*"
+
+[[edge_functions]]
+  function = "performance-monitor"
+  path = "/*"
+
+# 2025 Enhanced Plugins
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+[[plugins]]
+  package = "netlify-plugin-lighthouse"
+  [plugins.inputs]
+    performance_threshold = 90
+    accessibility_threshold = 95
+    best_practices_threshold = 90
+    seo_threshold = 95
+
+[[plugins]]
+  package = "@netlify/plugin-sitemap"
+  [plugins.inputs]
+    buildDir = "."
+
+[[plugins]]
+  package = "netlify-plugin-minify-html"
+  [plugins.inputs]
+    contexts = ["production", "deploy-preview"]
+
+[[plugins]]
+  package = "netlify-plugin-image-optim"
+  [plugins.inputs]
+    quality = 85
+
+[[plugins]]
+  package = "netlify-plugin-a11y"
+  [plugins.inputs]
+    checkPaths = ['/']
+    resultMode = "warn"
+
+# Functions Configuration
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+  external_node_modules = ["canvas", "jsdom"]
+
+# Build Configuration
+[build.processing]
+  skip_processing = false
+
+[build.processing.css]
+  bundle = true
+  minify = true
+
+[build.processing.js]
+  bundle = true
+  minify = true
+
+[build.processing.html]
+  pretty_urls = true
+
+[build.processing.images]
+  compress = true
+
+# Analytics & Monitoring (2025)
+[analytics]
+  provider = "netlify"
+  
+[split_testing]
+  [split_testing."header-design"]
+    path = "/*"
+    branches = ["original", "enhanced"]
+
+# Performance Budgets
+[performance_budgets]
+  [performance_budgets.desktop]
+    first_contentful_paint = "1.5s"
+    largest_contentful_paint = "2.5s"
+    cumulative_layout_shift = 0.1
+    first_input_delay = "100ms"
+    
+  [performance_budgets.mobile]
+    first_contentful_paint = "2.0s"
+    largest_contentful_paint = "3.0s"
+    cumulative_layout_shift = 0.1
+    first_input_delay = "150ms"

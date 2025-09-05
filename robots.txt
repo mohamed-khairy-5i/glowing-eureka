@@ -1,0 +1,81 @@
+# IdeaFlux - Visual Thinking Platform for Arabic Users
+# https://ideaflux.netlify.app
+
+User-agent: *
+Allow: /
+
+# Prioritize main pages
+Allow: /index.html
+Allow: /canvas.html
+Allow: /canvas-styles.css
+Allow: /canvas-script.js
+Allow: /styles.css
+Allow: /script.js
+Allow: /manifest.json
+Allow: /sw.js
+
+# Block sensitive or unnecessary paths
+Disallow: /admin/
+Disallow: /api/
+Disallow: /*.json$
+Disallow: /netlify/
+Disallow: /_logs/
+Disallow: /test/
+Disallow: /debug/
+
+# Special robots
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 1
+
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
+
+User-agent: Slurp
+Allow: /
+Crawl-delay: 2
+
+User-agent: DuckDuckBot
+Allow: /
+Crawl-delay: 1
+
+User-agent: Baiduspider
+Allow: /
+Crawl-delay: 3
+
+User-agent: YandexBot
+Allow: /
+Crawl-delay: 2
+
+User-agent: facebookexternalhit
+Allow: /
+
+User-agent: Twitterbot
+Allow: /
+
+User-agent: LinkedInBot
+Allow: /
+
+User-agent: WhatsApp
+Allow: /
+
+# Block known bad bots
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: MegaIndex
+Disallow: /
+
+# Sitemaps
+Sitemap: https://ideaflux.netlify.app/sitemap.xml
+Sitemap: https://ideaflux.netlify.app/sitemap-images.xml
+
+# Host information
+Host: ideaflux.netlify.app

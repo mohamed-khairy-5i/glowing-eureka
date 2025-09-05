@@ -5,12 +5,69 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IdeaFlux - منصة التفكير البصري والبحث المبتكر</title>
     <meta name="description" content="منصة مجانية للتفكير البصري وتنظيم الأفكار بطريقة تفاعلية مع قماش لانهائي وأدوات متقدمة">
-    <meta name="keywords" content="تفكير بصري, خرائط ذهنية, تنظيم أفكار, بحث تفاعلي, مجاني">
+    <meta name="keywords" content="تفكير بصري, خرائط ذهنية, تنظيم أفكار, بحث تفاعلي, مجاني, ذكاء اصطناعي">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#4f46e5">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="IdeaFlux">
+    
+    <!-- Icons -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" href="/assets/icon-180x180.png">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="IdeaFlux - منصة التفكير البصري العربية">
+    <meta property="og:description" content="أول منصة للتفكير البصري مصممة خصيصاً للمستخدم العربي - مجانية بالكامل">
+    <meta property="og:image" content="https://ideaflux.netlify.app/assets/og-image.png">
+    <meta property="og:url" content="https://ideaflux.netlify.app">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="IdeaFlux">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="IdeaFlux - منصة التفكير البصري العربية">
+    <meta name="twitter:description" content="أول منصة للتفكير البصري مصممة خصيصاً للمستخدم العربي - مجانية بالكامل">
+    <meta name="twitter:image" content="https://ideaflux.netlify.app/assets/twitter-card.png">
+    
+    <!-- Preconnect for performance -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="preconnect" href="https://generativelanguage.googleapis.com">
+    
+    <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Styles -->
     <link rel="stylesheet" href="styles.css">
+    
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "IdeaFlux",
+      "alternateName": "منصة التفكير البصري العربية",
+      "description": "أول منصة للتفكير البصري مصممة خصيصاً للمستخدم العربي - مجانية بالكامل",
+      "url": "https://ideaflux.netlify.app",
+      "applicationCategory": "ProductivityApplication",
+      "operatingSystem": "Any",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "author": {
+        "@type": "Organization",
+        "name": "IdeaFlux Team"
+      },
+      "inLanguage": "ar"
+    }
+    </script>
 </head>
 <body>
     <!-- Navigation -->
@@ -67,10 +124,10 @@
                     </div>
                 </div>
                 <div class="hero-buttons">
-                    <button class="btn btn-primary btn-large" onclick="startFreeCanvas()">
+                    <a href="/canvas.html" class="btn btn-primary btn-large">
                         <i class="fas fa-play"></i>
                         ابدأ التصميم الآن
-                    </button>
+                    </a>
                     <button class="btn btn-outline btn-large" onclick="showDemo()">
                         <i class="fas fa-video"></i>
                         شاهد العرض التوضيحي
@@ -443,9 +500,9 @@
                     </div>
                 </div>
                 <div class="pricing-footer">
-                    <button class="btn btn-primary btn-large" onclick="startFreeCanvas()">
+                    <a href="/canvas.html" class="btn btn-primary btn-large">
                         ابدأ الآن - مجاناً
-                    </button>
+                    </a>
                     <p class="no-credit-card">لا حاجة لبطاقة ائتمان</p>
                 </div>
             </div>

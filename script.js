@@ -588,18 +588,8 @@ class IdeaFlux {
     }
     
     startFreeCanvas() {
-        this.showToast('جاري تحميل قماش IdeaFlux...');
-        
-        // Simulate canvas loading
-        setTimeout(() => {
-            this.showToast('مرحباً بك في IdeaFlux! ابدأ بإضافة أفكارك.');
-            
-            // In a real app, this would redirect to the canvas application
-            // For demo purposes, we'll just show a success message
-            setTimeout(() => {
-                this.showToast('استخدم الأدوات في الأعلى لإضافة عناصر جديدة!');
-            }, 2000);
-        }, 1500);
+        // Redirect to canvas page
+        window.location.href = '/canvas.html';
     }
     
     showDemo() {

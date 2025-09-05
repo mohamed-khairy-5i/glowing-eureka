@@ -1,14 +1,19 @@
 {
   "name": "ideaflux",
-  "version": "1.0.0",
-  "description": "منصة التفكير البصري الأولى المصممة للمستخدم العربي - مجانية بالكامل",
+  "version": "2.0.0",
+  "description": "منصة التفكير البصري الأولى المصممة للمستخدم العربي - مجانية بالكامل مع واجهة عمل متقدمة وذكاء اصطناعي",
   "main": "index.html",
   "scripts": {
     "dev": "live-server --port=3000 --open=/",
-    "build": "echo 'Building for production...' && npm run optimize",
-    "optimize": "echo 'Optimizing assets...'",
+    "build": "echo 'Building IdeaFlux v2.0.0 for production...' && npm run optimize",
+    "optimize": "echo 'Optimizing assets and performance...'",
     "test": "echo 'Running tests...'",
-    "deploy": "netlify deploy --prod --dir=."
+    "deploy": "netlify deploy --prod --dir=.",
+    "canvas": "live-server --port=3001 --open=/canvas.html",
+    "preview": "netlify dev",
+    "lighthouse": "lighthouse https://ideaflux.netlify.app --output=html --output-path=./reports/lighthouse.html",
+    "validate": "html-validate *.html",
+    "compress": "gzip -9 -c dist/*.js > dist/*.js.gz && gzip -9 -c dist/*.css > dist/*.css.gz"
   },
   "keywords": [
     "visual-thinking",
@@ -19,28 +24,94 @@
     "free",
     "collaboration",
     "research",
-    "notes"
+    "notes",
+    "ai-powered",
+    "google-ai",
+    "pwa",
+    "netlify",
+    "2025",
+    "modern-web",
+    "rtl",
+    "arabic-ui",
+    "infinite-canvas",
+    "drag-drop",
+    "real-time"
   ],
-  "author": "IdeaFlux Team",
+  "author": {
+    "name": "IdeaFlux Team",
+    "email": "team@ideaflux.com",
+    "url": "https://ideaflux.netlify.app"
+  },
+  "contributors": [
+    {
+      "name": "AI Developer",
+      "role": "Lead Developer"
+    }
+  ],
   "license": "MIT",
   "homepage": "https://ideaflux.netlify.app",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ideaflux/ideaflux.git"
+    "url": "https://github.com/mohamed-khairy-5i/glowing-eureka.git"
   },
   "bugs": {
-    "url": "https://github.com/ideaflux/ideaflux/issues"
+    "url": "https://github.com/mohamed-khairy-5i/glowing-eureka/issues",
+    "email": "support@ideaflux.com"
+  },
+  "funding": {
+    "type": "opencollective",
+    "url": "https://opencollective.com/ideaflux"
   },
   "devDependencies": {
-    "live-server": "^1.2.2"
+    "live-server": "^1.2.2",
+    "lighthouse": "^11.4.0",
+    "html-validate": "^8.7.4"
   },
   "browserslist": [
     "> 1%",
     "last 2 versions",
-    "not dead"
+    "not dead",
+    "Chrome >= 90",
+    "Firefox >= 88",
+    "Safari >= 14",
+    "Edge >= 90"
   ],
   "engines": {
-    "node": ">=14.0.0",
-    "npm": ">=6.0.0"
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "pwa": {
+    "name": "IdeaFlux",
+    "short_name": "IdeaFlux",
+    "theme_color": "#4f46e5",
+    "background_color": "#ffffff",
+    "display": "standalone",
+    "scope": "/",
+    "start_url": "/"
+  },
+  "netlify": {
+    "redirects": [
+      {
+        "from": "/canvas",
+        "to": "/canvas.html",
+        "status": 200
+      },
+      {
+        "from": "/workspace",
+        "to": "/canvas.html",
+        "status": 200
+      }
+    ]
+  },
+  "performance": {
+    "budgets": [
+      {
+        "path": "/*.html",
+        "timings": [
+          { "metric": "fcp", "budget": 2000 },
+          { "metric": "lcp", "budget": 2500 }
+        ]
+      }
+    ]
   }
 }
