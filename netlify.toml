@@ -2,8 +2,12 @@
 
 [build]
   publish = "."
-  command = "echo 'IdeaFlux - Advanced Visual Thinking Platform'"
+  command = "npm ci && echo 'IdeaFlux - Advanced Visual Thinking Platform - Build Complete'"
   environment = { NODE_VERSION = "20", NPM_VERSION = "10" }
+
+[build.ignore]
+  # Don't build if only README changed
+  command = "git diff --quiet HEAD^ HEAD -- README.md"
 
 # 2025 Advanced Security Headers
 [[headers]]
@@ -252,38 +256,12 @@
   function = "performance-monitor"
   path = "/*"
 
-# 2025 Enhanced Plugins
-[[plugins]]
-  package = "@netlify/plugin-nextjs"
-
-[[plugins]]
-  package = "netlify-plugin-lighthouse"
-  [plugins.inputs]
-    performance_threshold = 90
-    accessibility_threshold = 95
-    best_practices_threshold = 90
-    seo_threshold = 95
-
+# Essential Plugins Only - 2025
 [[plugins]]
   package = "@netlify/plugin-sitemap"
-  [plugins.inputs]
-    buildDir = "."
 
 [[plugins]]
   package = "netlify-plugin-minify-html"
-  [plugins.inputs]
-    contexts = ["production", "deploy-preview"]
-
-[[plugins]]
-  package = "netlify-plugin-image-optim"
-  [plugins.inputs]
-    quality = 85
-
-[[plugins]]
-  package = "netlify-plugin-a11y"
-  [plugins.inputs]
-    checkPaths = ['/']
-    resultMode = "warn"
 
 # Functions Configuration
 [functions]
